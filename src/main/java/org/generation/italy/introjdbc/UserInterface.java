@@ -12,6 +12,6 @@ public class UserInterface {
 
 
     public void start(){
-        var cats = catRepo.getAll();
+       // var cats = catRepo.getAll();
     }
 }

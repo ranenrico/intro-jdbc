@@ -1,6 +1,7 @@
 package org.generation.italy.introjdbc.model.repositories;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -8,12 +9,28 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
+import javax.xml.transform.Result;
+
 import org.generation.italy.introjdbc.model.Category;
 import org.generation.italy.introjdbc.model.exceptions.DataException;
 import org.generation.italy.introjdbc.utils.ConnectionUtils;
 
 public class JdbcCategoryRepository implements CategoryRepository {
     private static final String ALL_CATEGORIES = "SELECT categoryid, categoryname, description FROM categories";
+    private static final String ALL_CATEGORIES_NAME_LIKE = """
+                                                                SELECT categoryid, categoryname, description 
+                                                                FROM categories
+                                                                WHERE categoryname LIKE ?
+                                                                """;
+    private static final String CATEGORY_BY_ID = """
+                                                    SELECT categoryid, categoryname, description 
+                                                    FROM categories
+                                                    WHERE categoryid = ?
+                                                    """;
+    private static final String DELETE_BY_ID = """
+                                                    DELETE FROM categories
+                                                    WHERE categoryid = ?
+                                                    """;
     @Override
     public Iterable<Category> getAll() throws DataException {
         try(
@@ -34,21 +51,57 @@ public class JdbcCategoryRepository implements CategoryRepository {
     }
 
     @Override
-    public Iterable<Category> getByNameLike(String part) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getByNameLike'");
+    public Iterable<Category> getByNameLike(String part) throws DataException {
+        try(
+            Connection c = ConnectionUtils.createConnection();
+            PreparedStatement ps = c.prepareStatement(ALL_CATEGORIES_NAME_LIKE);
+        ){
+                ps.setString(1, "%"+part+"%");
+                try(ResultSet rs = ps.executeQuery()){
+                    Collection<Category> cats = new ArrayList<>();
+                    while(rs.next()){
+                        cats.add(new Category(rs.getInt("categoryid"), rs.getString("categoryname"), rs.getString("description")));
+                    }
+                    return cats;
+                }
+                
+            } catch(SQLException e){
+                throw new DataException("Errore nella ricerca di categorie per nome LIKE", e);
+            }
     }
 
     @Override
-    public Optional<Category> findById(int id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+    public Optional<Category> findById(int id) throws DataException {
+        try(
+            Connection c = ConnectionUtils.createConnection();
+            PreparedStatement ps = c.prepareStatement(CATEGORY_BY_ID);
+        ){
+            ps.setInt(1, id);
+            try(ResultSet rs = ps.executeQuery()){
+                if(rs.next()){
+                    return Optional.of(new Category(rs.getInt("categoryid"),
+                    rs.getString("categoryname"), rs.getString("description")));
+                } else {
+                    return Optional.empty();
+                }
+            }
+        }catch(SQLException e){
+            throw new DataException("Errore nella ricerca di categorie per id", e);
+        }
     }
 
     @Override
-    public boolean deleteById(int id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
+    public boolean deleteById(int id) throws DataException {
+        try(
+            Connection c = ConnectionUtils.createConnection();
+            PreparedStatement ps = c.prepareStatement(DELETE_BY_ID); 
+        ){
+            ps.setInt(1, id);
+            int n = ps.executeUpdate();
+            return n == 1;
+        }catch(SQLException e){
+            throw new DataException("Errore nell'eliminazione di categorie per id", e);
+        }
     }
 
     @Override

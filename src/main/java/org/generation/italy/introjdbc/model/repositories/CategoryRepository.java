@@ -7,10 +7,10 @@ import org.generation.italy.introjdbc.model.exceptions.DataException;
 
 public interface CategoryRepository {
     Iterable<Category> getAll() throws DataException;
-    Iterable<Category> getByNameLike(String part);
-    Optional<Category> findById(int id);
-    boolean deleteById(int id);
-    Optional<Category> update(Category newCategory);
-    void create(Category category);
+    Iterable<Category> getByNameLike(String part) throws DataException;
+    Optional<Category> findById(int id) throws DataException;
+    boolean deleteById(int id) throws DataException;
+    Optional<Category> update(Category newCategory) throws DataException;
+    void create(Category category) throws DataException;
 
 }
