@@ -1,6 +1,7 @@
 package org.generation.italy.introjdbc.model.repositories;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -14,6 +15,11 @@ import org.generation.italy.introjdbc.utils.ConnectionUtils;
 
 public class JdbcCategoryRepository implements CategoryRepository {
     private static final String ALL_CATEGORIES = "SELECT categoryid, categoryname, description FROM categories";
+    private static final String ALL_CATEGORIES_NAME_LIKE = """
+                                                                SELECT categoryid, categoryname, description 
+                                                                FROM categories
+                                                                WHERE categoryname LIKE ?
+                                                                """;
     @Override
     public Iterable<Category> getAll() throws DataException {
         try(
@@ -34,9 +40,23 @@ public class JdbcCategoryRepository implements CategoryRepository {
     }
 
     @Override
-    public Iterable<Category> getByNameLike(String part) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getByNameLike'");
+    public Iterable<Category> getByNameLike(String part) throws DataException {
+        try(
+            Connection c = ConnectionUtils.createConnection();
+            PreparedStatement ps = c.prepareStatement(ALL_CATEGORIES_NAME_LIKE);
+        ){
+                ps.setString(1, "%"+part+"%");
+                try(ResultSet rs = ps.executeQuery()){
+                    Collection<Category> cats = new ArrayList<>();
+                    while(rs.next()){
+                        cats.add(new Category(rs.getInt("categoryid"), rs.getString("categoryname"), rs.getString("description")));
+                    }
+                    return cats;
+                }
+                
+            } catch(SQLException e){
+                throw new DataException("Errore", e);
+            }
     }
 
     @Override
