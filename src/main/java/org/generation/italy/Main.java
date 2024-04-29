@@ -40,5 +40,13 @@ public class Main {
         for(var c : cats){
             System.out.println(c.getName());
         }
+        var oc = cr.findById(1);
+        if(oc.isPresent()){
+            System.out.println(oc.get().getName());
+        } else {
+            System.out.println("Non esiste questa categoria");
+        }
+        var result = cr.deleteById(9);
+        System.out.println(result);
     }
 }
