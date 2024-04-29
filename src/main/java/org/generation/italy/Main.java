@@ -23,8 +23,21 @@ import org.postgresql.Driver;
 //factory method
 
 public class Main {
-    private static final String ALL_CATEGORIES = "SELECT categoryid, categoryname, description FROM categories";
-    public static void main(String[] args) {
-    
+
+    public static void main(String[] args) throws DataException{
+
+        CategoryRepository cr = new JdbcCategoryRepository();
+        var cats = cr.getByNameLike("ea");
+        for(var c : cats){
+            System.out.println(c.getName());
+        }
+        var oc = cr.findById(1);
+        if(oc.isPresent()){
+            System.out.println(oc.get().getName());
+        } else {
+            System.out.println("Non esiste questa categoria");
+        }
+        var result = cr.deleteById(9);
+        System.out.println(result);
     }
 }
