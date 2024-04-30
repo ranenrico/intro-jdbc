@@ -7,12 +7,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.generation.italy.introjdbc.model.Category;
 import org.generation.italy.introjdbc.model.exceptions.DataException;
 import org.generation.italy.introjdbc.model.repositories.CategoryRepository;
 import org.generation.italy.introjdbc.model.repositories.JdbcCategoryRepository;
 import org.postgresql.Driver;
 
-
+//costruire repository per i clienti
+//newClient(), ricercaClientNazioni(Nazione)
+//ricercaSingoloClientID(id), ritorno 1 cliente, deve ritornare anche la lista dei suoi ordini (e ogni ordine il suo set di ordinLine)
+//
 
 public class Main {
     private static final String ALL_CATEGORIES = "SELECT categoryid, categoryname, description FROM categories";
@@ -46,7 +50,12 @@ public class Main {
         } else {
             System.out.println("Non esiste questa categoria");
         }
-        var result = cr.deleteById(9);
-        System.out.println(result);
+        //var resultUpdate = cr.update(new Category(9, "Ciao", "pippo"));
+        
+        Category created  = cr.create(new Category(0, "Ciao", "pippo"));
+        Category checkCategory = cr.findById(created.getId()).get();
+        System.out.println(checkCategory.getName() + " " + checkCategory.getDescription());
+        Category newC = new Category(created.getId(), "Ciao2", "Pippo2");
+        cr.update(newC);
     }
 }
