@@ -45,7 +45,7 @@ public class CsvCategoryRepository implements CategoryRepository{
     }
 
     @Override
-    public void create(Category category) {
+    public Category create(Category category) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'create'");
     }

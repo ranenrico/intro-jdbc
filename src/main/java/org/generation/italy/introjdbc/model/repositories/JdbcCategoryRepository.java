@@ -31,6 +31,16 @@ public class JdbcCategoryRepository implements CategoryRepository {
                                                     DELETE FROM categories
                                                     WHERE categoryid = ?
                                                     """;
+    private static final String UPDATE_CATEGORY = """
+                                                    UPDATE categories 
+                                                    SET categoryname=?, description=?
+                                                    where categoryid=?
+                                                    """;
+    private static final String INSERT_CATEGORY = """
+                                                        INSERT INTO categories
+                                                        (categoryName, description)
+                                                        VALUES(?,?)
+                                                        """;
     @Override
     public Iterable<Category> getAll() throws DataException {
         try(
@@ -69,6 +79,19 @@ public class JdbcCategoryRepository implements CategoryRepository {
                 throw new DataException("Errore nella ricerca di categorie per nome LIKE", e);
             }
     }
+    @Override
+    public boolean deleteById(int id) throws DataException {
+        try(
+            Connection c = ConnectionUtils.createConnection();
+            PreparedStatement ps = c.prepareStatement(DELETE_BY_ID); 
+        ){
+            ps.setInt(1, id);
+            int n = ps.executeUpdate();
+            return n == 1;
+        }catch(SQLException e){
+            throw new DataException("Errore nell'eliminazione di categorie per id", e);
+        }
+    }
 
     @Override
     public Optional<Category> findById(int id) throws DataException {
@@ -89,31 +112,49 @@ public class JdbcCategoryRepository implements CategoryRepository {
             throw new DataException("Errore nella ricerca di categorie per id", e);
         }
     }
-
     @Override
-    public boolean deleteById(int id) throws DataException {
+    public Optional<Category> update(Category newCategory) throws DataException {
+        Optional<Category> oldCategory= findById(newCategory.getId());
+        if(oldCategory.isEmpty()){
+            return Optional.empty();
+        }
         try(
             Connection c = ConnectionUtils.createConnection();
-            PreparedStatement ps = c.prepareStatement(DELETE_BY_ID); 
+            PreparedStatement ps = c.prepareStatement(UPDATE_CATEGORY);
         ){
-            ps.setInt(1, id);
-            int n = ps.executeUpdate();
-            return n == 1;
+            ps.setString (1, newCategory.getName());
+            ps.setString(2, newCategory.getDescription());
+            ps.setInt(3,newCategory.getId());
+            ps.executeUpdate();
+            // if(n!=1){
+            //     return Optional.empty();
+            // }
+            return oldCategory;
+
         }catch(SQLException e){
-            throw new DataException("Errore nell'eliminazione di categorie per id", e);
+            throw new DataException("Errore nella modifica di categorie ", e);
         }
     }
 
-    @Override
-    public Optional<Category> update(Category newCategory) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
-    }
 
     @Override
-    public void create(Category category) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'create'");
+    public Category create(Category category) throws DataException {
+            try(
+                Connection c = ConnectionUtils.createConnection();
+                PreparedStatement ps = c.prepareStatement(INSERT_CATEGORY,Statement.RETURN_GENERATED_KEYS)){
+                ps.setString(1,category.getName());
+                ps.setString(2,category.getDescription());
+                ps.executeUpdate();
+                ResultSet rs=ps.getGeneratedKeys();
+                if(rs.next()){
+                    int key=rs.getInt(1);
+                    category.setCategoryId(key);
+                }
+                return category;
+            }catch(SQLException e){
+                throw new DataException("Errore nell'aggiunta di categorie ", e);
+            }
+        }
     }
 
-}
+

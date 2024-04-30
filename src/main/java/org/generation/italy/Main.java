@@ -7,12 +7,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.generation.italy.introjdbc.model.Category;
 import org.generation.italy.introjdbc.model.exceptions.DataException;
 import org.generation.italy.introjdbc.model.repositories.CategoryRepository;
 import org.generation.italy.introjdbc.model.repositories.JdbcCategoryRepository;
 import org.postgresql.Driver;
-
-
+//REPOSITORY PER CLIENTI-->
+//metodo per creare nuovo cliente
+//ricerca per tutti i clienti di una certa nazione
+//ricerca di un singolo cliente per id(torna un cliente).
+//avrà lista cliente e ogni ordine lsita di sue linee d'ordine (customer,order,orderdetails) 
+//.ordine ha un customer.customer ha lista di ordini.ordine ha list di linee ordine. linee ordine ha ordine. 
+//tripla join
 
 public class Main {
     private static final String ALL_CATEGORIES = "SELECT categoryid, categoryname, description FROM categories";
@@ -46,7 +52,15 @@ public class Main {
         } else {
             System.out.println("Non esiste questa categoria");
         }
-        var result = cr.deleteById(9);
-        System.out.println(result);
+        // var result = cr.deleteById(9);
+        // System.out.println(result);
+
+        //Optional<Category> update(Category newCategory)
+       //var oc1= cr.update(new Category(9, "ciao", "pippo"));
+       Category created=cr.create(new Category(0, "ciao", "pippo"));
+       Category checkCategory=cr.findById(created.getId()).get();//????????????????????????????????????????????????????????????
+       System.out.println(checkCategory.getName()+" "+checkCategory.getDescription());
+       Category newC=new Category(created.getId(), "ciao2", "pippo2");
+       cr.update(newC);
     }
 }

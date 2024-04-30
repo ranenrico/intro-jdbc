@@ -11,6 +11,6 @@ public interface CategoryRepository {
     Optional<Category> findById(int id) throws DataException;
     boolean deleteById(int id) throws DataException;
     Optional<Category> update(Category newCategory) throws DataException;
-    void create(Category category) throws DataException;
+    Category create(Category category) throws DataException;
 
 }

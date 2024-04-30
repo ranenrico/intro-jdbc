@@ -22,4 +22,8 @@ public class Category {
     public String getDescription(){
         return description;
     }
+
+    public void setCategoryId(int key) {
+        this.id=key;
+    }
 }
