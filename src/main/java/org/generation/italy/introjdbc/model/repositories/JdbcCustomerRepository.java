@@ -9,18 +9,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
-import org.generation.italy.introjdbc.model.Category;
+import org.generation.italy.introjdbc.model.Customer;
 import org.generation.italy.introjdbc.model.exceptions.DataException;
 import org.generation.italy.introjdbc.utils.ConnectionUtils;
 
-public class JdbcCategoryRepository implements CategoryRepository {
-    private static final String ALL_CATEGORIES = "SELECT categoryid, categoryname, description FROM categories";
-    private static final String ALL_CATEGORIES_NAME_LIKE = """
-                                                                SELECT categoryid, categoryname, description 
-                                                                FROM categories
-                                                                WHERE categoryname LIKE ?
+public class JdbcCustomerRepository implements CustomerRepository{
+    private static final String ALL_CUSTOMER = "SELECT custid, companyname, contactname, contacttitile, address, city, region, postalcode, country, phone, fax FROM customers";
+    private static final String ALL_CUSTOMER_NAME_LIKE = """
+                                                                SELECT custid, companyname, contactname, contacttitile, address, city, region, postalcode, country, phone, fax 
+                                                                FROM customers
+                                                                WHERE companyname LIKE ?
                                                                 """;
-    private static final String CATEGORY_BY_ID = """
+    private static final String CUSTOMER_BY_ID = """
                                                     SELECT categoryid, categoryname, description 
                                                     FROM categories
                                                     WHERE categoryid = ?
@@ -40,26 +40,26 @@ public class JdbcCategoryRepository implements CategoryRepository {
                                                         VALUES(?, ?)
                                                         """;
     @Override
-    public Iterable<Category> getAll() throws DataException {
+    public Iterable<Customer> getAll() throws DataException {
         try(
             Connection c = ConnectionUtils.createConnection();
             Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery(ALL_CATEGORIES)){
-                Collection<Category> cats = new ArrayList<>();
+                Collection<Customer> cats = new ArrayList<>();
                 while(rs.next()){
                     // int id = rs.getInt("categoryid");
                     // String name = rs.getString("categoryname");
                     // String desc = rs.getString("description");
-                    cats.add(new Category(rs.getInt("categoryid"), rs.getString("categoryname"), rs.getString("description")));               
+                    cats.add(new Customer(rs.getString("companyname"), rs.getString("contactname"), rs.getString("contacttitle"), rs.getString("address"), rs.getString("city"), rs.getString("region"), rs.getString("postalcode"), rs.getString("country"), rs.getString("phone"), rs.getString("fax")));               
                 }
                 return cats;
             } catch(SQLException e){
-            throw new DataException("Errore nella lettura delle categorie del database", e);
+            throw new DataException("Errore nella lettura dei clienti del database", e);
         }
     }
 
     @Override
-    public Iterable<Category> getByNameLike(String part) throws DataException {
+    public Iterable<Customer> getByNameLike(String part) throws DataException {
         try(
             Connection c = ConnectionUtils.createConnection();
             PreparedStatement ps = c.prepareStatement(ALL_CATEGORIES_NAME_LIKE);
@@ -79,7 +79,7 @@ public class JdbcCategoryRepository implements CategoryRepository {
     }
 
     @Override
-    public Optional<Category> findById(int id) throws DataException {
+    public Optional<Customer> findById(int id) throws DataException {
         try(
             Connection c = ConnectionUtils.createConnection();
             PreparedStatement ps = c.prepareStatement(CATEGORY_BY_ID);
@@ -113,7 +113,7 @@ public class JdbcCategoryRepository implements CategoryRepository {
     }
 
     @Override
-    public Optional<Category> update(Category newCategory) throws DataException {
+    public Optional<Customer> update(Customer newCategory) throws DataException {
         Optional<Category> oldCat = findById(newCategory.getId());
         if(oldCat.isEmpty()){
             return Optional.empty();
@@ -133,7 +133,7 @@ public class JdbcCategoryRepository implements CategoryRepository {
     }
 
     @Override
-    public Category create(Category category) throws DataException{
+    public Customer create(Customer category) throws DataException{
         try(
             Connection c = ConnectionUtils.createConnection();
             PreparedStatement ps = c.prepareStatement(INSERT_CATEGORY, Statement.RETURN_GENERATED_KEYS); 
@@ -151,5 +151,4 @@ public class JdbcCategoryRepository implements CategoryRepository {
             throw new DataException("Errore nell'aggiunta di una categoria", e);
         }
     }
-
 }
