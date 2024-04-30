@@ -134,16 +134,22 @@ public class JdbcCategoryRepository implements CategoryRepository {
     }
 
     @Override
-    public void create(Category category) throws DataException{
+    public Category create(Category category) throws DataException{
         try(
             Connection c = ConnectionUtils.createConnection();
-            PreparedStatement ps = c.prepareStatement(CREATE_CATEGORY);
+            PreparedStatement ps = c.prepareStatement(INSERT_CATEGORY, Statement.RETURN_GENERATED_KEYS); 
         ){
             ps.setString(1, category.getName());
             ps.setString(2, category.getDescription());
             ps.executeUpdate();
+            ResultSet rs = ps.getGeneratedKeys();
+            if(rs.next()){
+                int key = rs.getInt(1);
+                category.setCategoryId(key);
+            }
+            return category;
         }catch(SQLException e){
-            throw new DataException("Errore nell'inserimento di categorie", e);
+            throw new DataException("Errore nell'aggiunta di una categoria", e);
         }
     }
 

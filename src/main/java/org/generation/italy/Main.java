@@ -5,22 +5,16 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import org.generation.italy.introjdbc.model.Category;
 import org.generation.italy.introjdbc.model.exceptions.DataException;
 import org.generation.italy.introjdbc.model.repositories.CategoryRepository;
 import org.generation.italy.introjdbc.model.repositories.JdbcCategoryRepository;
 import org.postgresql.Driver;
 
-//perché il mio codice non usa direttamente le classi della libreria di postgres?
-//qual è la tecnica che mi permette di usare delle interfacce per parlare con degli oggetti della libreria di postgres
-
-
-//com'è possibile che il metodo DriverManager getConnection() mi ritorni un oggetto che io non ho nominato?
-
-//perché il DriverManager seleziona il giusto driver in base all'URL (driver ha metodo acceptsURL)
-
-//il metodo DriverManager getConnection() è un esempio di un idioma che si chiama..? (un pattern meno dignitoso)
-
-//factory method
+//costruire repository per i clienti
+//newClient(), ricercaClientNazioni(Nazione)
+//ricercaSingoloClientID(id), ritorno 1 cliente, deve ritornare anche la lista dei suoi ordini (e ogni ordine il suo set di ordinLine)
+//
 
 public class Main {
 
@@ -37,7 +31,12 @@ public class Main {
         } else {
             System.out.println("Non esiste questa categoria");
         }
-        var result = cr.deleteById(9);
-        System.out.println(result);
+        //var resultUpdate = cr.update(new Category(9, "Ciao", "pippo"));
+        
+        Category created  = cr.create(new Category(0, "Ciao", "pippo"));
+        Category checkCategory = cr.findById(created.getId()).get();
+        System.out.println(checkCategory.getName() + " " + checkCategory.getDescription());
+        Category newC = new Category(created.getId(), "Ciao2", "Pippo2");
+        cr.update(newC);
     }
 }
