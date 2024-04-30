@@ -25,11 +25,6 @@ public class JdbcCategoryRepository implements CategoryRepository {
                                                     FROM categories
                                                     WHERE categoryid = ?
                                                     """;
-    private static final String UPDATE_CATEGORY = """
-                                                    UPDATE categoryies 
-                                                    FROM categories
-                                                    WHERE categoryid = ?
-                                                    """;
     private static final String DELETE_BY_ID = """
                                                     DELETE FROM categories
                                                     WHERE categoryid = ?
@@ -118,24 +113,11 @@ public class JdbcCategoryRepository implements CategoryRepository {
     }
 
     @Override
-<<<<<<< HEAD
-    public Optional<Category> update(Category newCategory) {
-=======
     public Optional<Category> update(Category newCategory) throws DataException {
->>>>>>> main
         Optional<Category> oldCat = findById(newCategory.getId());
         if(oldCat.isEmpty()){
             return Optional.empty();
         }
-<<<<<<< HEAD
-        try (Connection c = ConnectionUtils.createConnection()
-        PreparedStatement ps = c.prepareStatement(UPDATE_CATEGORY)) {
-            
-        } catch (Exception e) {
-            // TODO: handle exception
-        }
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
-=======
         try(
             Connection c = ConnectionUtils.createConnection();
             PreparedStatement ps = c.prepareStatement(UPDATE_CATEGORY);
@@ -148,7 +130,6 @@ public class JdbcCategoryRepository implements CategoryRepository {
         }catch(SQLException e){
             throw new DataException("Errore nella modifica", e);
         }
->>>>>>> main
     }
 
     @Override

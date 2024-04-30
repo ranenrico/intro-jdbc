@@ -1,28 +1,14 @@
 package org.generation.italy;
 
-<<<<<<< HEAD
-import org.generation.italy.introjdbc.model.exceptions.DataException;
-import org.generation.italy.introjdbc.model.repositories.CategoryRepository;
-import org.generation.italy.introjdbc.model.repositories.JdbcCategoryRepository;
-=======
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import org.generation.italy.introjdbc.model.Category;
 import org.generation.italy.introjdbc.model.exceptions.DataException;
 import org.generation.italy.introjdbc.model.repositories.CategoryRepository;
 import org.generation.italy.introjdbc.model.repositories.JdbcCategoryRepository;
-import org.postgresql.Driver;
 
 //costruire repository per i clienti
 //newClient(), ricercaClientNazioni(Nazione)
 //ricercaSingoloClientID(id), ritorno 1 cliente, deve ritornare anche la lista dei suoi ordini (e ogni ordine il suo set di ordinLine)
 //
->>>>>>> main
 
 public class Main {
     private static final String ALL_CATEGORIES = "SELECT categoryid, categoryname, description FROM categories";

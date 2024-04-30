@@ -1,30 +1,16 @@
 package org.generation.italy.introjdbc.model;
 
-<<<<<<< HEAD
-import java.util.Set;
-=======
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
->>>>>>> main
 
 public class Customer {
     private int id;
     private String companyName;
     private String contactName;
     private String contactTitle;
-<<<<<<< HEAD
-    private String aderss;
-    private String city;
-    private String region;
-    private String postalCode;
-    private String companyName;
-    private String companyName;
-    private String companyName;
-    private Set<Order> orders;
-
-=======
     private String address;
     private String city;
     private String region;
@@ -52,14 +38,11 @@ public class Customer {
         this.fax = fax;
         this.orders = new TreeSet<>();
     }
->>>>>>> main
 
     public int addOrder(Order or){
         orders.add(or);
         return orders.size();
     }
-<<<<<<< HEAD
-=======
 
     public int getId() {
         return id;
@@ -72,6 +55,4 @@ public class Customer {
     public String getContactName() {
         return contactName;
     }
-    
->>>>>>> main
 }
