@@ -115,6 +115,10 @@ public class JdbcCategoryRepository implements CategoryRepository {
 
     @Override
     public Optional<Category> update(Category newCategory) throws DataException{
+          Optional <Category> oldCategory = findById(newCategory.getId());
+          if(oldCategory.isEmpty()){
+            return Optional.empty();
+          }
         try(
             Connection c = ConnectionUtils.createConnection();
             PreparedStatement ps = c.prepareStatement(UPDATE_CATEGORY);
@@ -122,12 +126,8 @@ public class JdbcCategoryRepository implements CategoryRepository {
             ps.setString(1, newCategory.getName());
             ps.setString(2, newCategory.getDescription());
             ps.setInt(3, newCategory.getId());
-            int n = ps.executeUpdate();
-            if(n == 1){
-                return Optional.of(newCategory);
-            } else {
-                return Optional.empty();
-            }
+            ps.executeUpdate();
+           return oldCategory;
         }catch(SQLException e){
             throw new DataException("Errore nell'aggiornamento di categorie", e);
         }
