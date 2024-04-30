@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
-import javax.xml.transform.Result;
-
 import org.generation.italy.introjdbc.model.Category;
 import org.generation.italy.introjdbc.model.exceptions.DataException;
 import org.generation.italy.introjdbc.utils.ConnectionUtils;
@@ -24,6 +22,11 @@ public class JdbcCategoryRepository implements CategoryRepository {
                                                                 """;
     private static final String CATEGORY_BY_ID = """
                                                     SELECT categoryid, categoryname, description 
+                                                    FROM categories
+                                                    WHERE categoryid = ?
+                                                    """;
+    private static final String UPDATE_CATEGORY = """
+                                                    UPDATE categoryies 
                                                     FROM categories
                                                     WHERE categoryid = ?
                                                     """;
@@ -106,7 +109,16 @@ public class JdbcCategoryRepository implements CategoryRepository {
 
     @Override
     public Optional<Category> update(Category newCategory) {
-        // TODO Auto-generated method stub
+        Optional<Category> oldCat = findById(newCategory.getId());
+        if(oldCat.isEmpty()){
+            return Optional.empty();
+        }
+        try (Connection c = ConnectionUtils.createConnection()
+        PreparedStatement ps = c.prepareStatement(UPDATE_CATEGORY)) {
+            
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
         throw new UnsupportedOperationException("Unimplemented method 'update'");
     }
 

@@ -1,9 +1,7 @@
 package org.generation.italy.introjdbc.model.repositories;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Optional;
 
 import org.generation.italy.introjdbc.model.Category;
