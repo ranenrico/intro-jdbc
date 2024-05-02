@@ -1,15 +1,13 @@
 package org.generation.italy.introjdbc.model.repositories;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Optional;
 
 import org.generation.italy.introjdbc.model.Category;
 import org.generation.italy.introjdbc.model.exceptions.DataException;
 
-public class CsvCategoryRepository implements CategoryRepository{
+public class CsvCategoryRepository implements CategoryRepository<Category>{
 
     @Override
     public Iterable<Category> getAll() throws DataException {

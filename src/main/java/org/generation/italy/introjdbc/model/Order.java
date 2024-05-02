@@ -23,6 +23,12 @@ public class Order implements Comparable<Order>{
         this.orderLines = new HashSet<>();
     }
 
+    public Order(LocalDate orderDate, LocalDate requirDate, LocalDate shipDate, double freight,
+            String shipName, String shipAddress, String shipCity, String shipRegion, String postalCode,
+            String shipCountry) {
+                this(null, orderDate, requirDate, shipDate, freight, shipName, shipAddress, shipCity, shipRegion, postalCode, shipCountry);
+            }
+
     public Order(Customer customer, LocalDate orderDate, LocalDate requirDate, LocalDate shipDate, double freight,
             String shipName, String shipAddress, String shipCity, String shipRegion, String postalCode,
             String shipCountry) {

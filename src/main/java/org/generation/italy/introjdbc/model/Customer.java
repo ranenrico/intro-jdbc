@@ -1,7 +1,5 @@
 package org.generation.italy.introjdbc.model;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -53,6 +51,42 @@ public class Customer {
 
     public String getContactName() {
         return contactName;
+    }
+
+    public String getContactTitle() {
+        return contactTitle;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getFax() {
+        return fax;
+    }
+
+    public void setCategoryId(int key) {
+        this.id = key;
     }
     
 }

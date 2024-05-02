@@ -13,7 +13,7 @@ import org.generation.italy.introjdbc.model.Category;
 import org.generation.italy.introjdbc.model.exceptions.DataException;
 import org.generation.italy.introjdbc.utils.ConnectionUtils;
 
-public class JdbcCategoryRepository implements CategoryRepository {
+public class JdbcCategoryRepository implements CategoryRepository<Category> {
     private static final String ALL_CATEGORIES = "SELECT categoryid, categoryname, description FROM categories";
     private static final String ALL_CATEGORIES_NAME_LIKE = """
                                                                 SELECT categoryid, categoryname, description 
@@ -113,8 +113,8 @@ public class JdbcCategoryRepository implements CategoryRepository {
     }
 
     @Override
-    public Optional<Category> update(Category newCategory) throws DataException {
-        Optional<Category> oldCat = findById(newCategory.getId());
+    public Optional<Category> update(Category obj) throws DataException {
+        Optional<Category> oldCat = findById(obj.getId());
         if(oldCat.isEmpty()){
             return Optional.empty();
         }
@@ -122,9 +122,9 @@ public class JdbcCategoryRepository implements CategoryRepository {
             Connection c = ConnectionUtils.createConnection();
             PreparedStatement ps = c.prepareStatement(UPDATE_CATEGORY);
         ){
-            ps.setString(1, newCategory.getName());
-            ps.setString(2, newCategory.getDescription());
-            ps.setInt(3, newCategory.getId());
+            ps.setString(1, obj.getName());
+            ps.setString(2, obj.getDescription());
+            ps.setInt(3, obj.getId());
             ps.executeUpdate();               
             return oldCat;
         }catch(SQLException e){
@@ -133,23 +133,22 @@ public class JdbcCategoryRepository implements CategoryRepository {
     }
 
     @Override
-    public Category create(Category category) throws DataException{
+    public Category create(Category obj) throws DataException{
         try(
             Connection c = ConnectionUtils.createConnection();
             PreparedStatement ps = c.prepareStatement(INSERT_CATEGORY, Statement.RETURN_GENERATED_KEYS); 
         ){
-            ps.setString(1, category.getName());
-            ps.setString(2, category.getDescription());
+            ps.setString(1, obj.getName());
+            ps.setString(2, obj.getDescription());
             ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
             if(rs.next()){
                 int key = rs.getInt(1);
-                category.setCategoryId(key);
+                obj.setCategoryId(key);
             }
-            return category;
+            return obj;
         }catch(SQLException e){
             throw new DataException("Errore nell'aggiunta di una categoria", e);
         }
     }
-
 }

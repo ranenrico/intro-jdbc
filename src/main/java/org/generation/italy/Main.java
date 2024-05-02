@@ -8,9 +8,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.generation.italy.introjdbc.model.Category;
+import org.generation.italy.introjdbc.model.Customer;
 import org.generation.italy.introjdbc.model.exceptions.DataException;
 import org.generation.italy.introjdbc.model.repositories.CategoryRepository;
+import org.generation.italy.introjdbc.model.repositories.CustomerRepository;
 import org.generation.italy.introjdbc.model.repositories.JdbcCategoryRepository;
+import org.generation.italy.introjdbc.model.repositories.JdbcCustomerRepository;
 import org.postgresql.Driver;
 
 //costruire repository per i clienti
@@ -39,7 +42,7 @@ public class Main {
         // } catch (SQLException e) {
         //     e.printStackTrace();
         // }
-        CategoryRepository cr = new JdbcCategoryRepository();
+        CategoryRepository<Category> cr = new JdbcCategoryRepository();
         var cats = cr.getByNameLike("ea");
         for(var c : cats){
             System.out.println(c.getName());
@@ -52,10 +55,14 @@ public class Main {
         }
         //var resultUpdate = cr.update(new Category(9, "Ciao", "pippo"));
         
-        Category created  = cr.create(new Category(0, "Ciao", "pippo"));
-        Category checkCategory = cr.findById(created.getId()).get();
-        System.out.println(checkCategory.getName() + " " + checkCategory.getDescription());
-        Category newC = new Category(created.getId(), "Ciao2", "Pippo2");
-        cr.update(newC);
+        // Category created  = cr.create(new Category(0, "Ciao", "pippo"));
+        // Category checkCategory = cr.findById(created.getId()).get();
+        // System.out.println(checkCategory.getName() + " " + checkCategory.getDescription());
+        // Category newC = new Category(created.getId(), "Ciao2", "Pippo2");
+        // cr.update(newC);
+
+        CustomerRepository<Customer> custRepo = new JdbcCustomerRepository();
+        var custNation = custRepo.findByNation("Germany");
+        System.out.println(custNation);
     }
 }
