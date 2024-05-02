@@ -149,20 +149,20 @@ public class JdbcCustomerRepositery implements CustomerRepositery{
     }
 
     @Override
-    public Customer create(Customer category) throws DataException{
+    public Customer create(Customer customer) throws DataException{
         try(
             Connection c = ConnectionUtils.createConnection();
             PreparedStatement ps = c.prepareStatement(INSERT_CUSTOMER, Statement.RETURN_GENERATED_KEYS); 
         ){
-            ps.setString(1, category.getName());
-            ps.setString(2, category.getDescription());
+            ps.setString(1, customer.getName());
+            ps.setString(2, customer.getDescription());
             ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
             if(rs.next()){
                 int key = rs.getInt(1);
-                category.setCustomerId(key);
+                customer.setCustomerId(key);
             }
-            return category;
+            return customer;
         }catch(SQLException e){
             throw new DataException("Errore nell'aggiunta di una categoria", e);
         }

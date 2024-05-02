@@ -25,12 +25,8 @@ public class Order implements Comparable<Order>{
         this.orderLines = new HashSet();
         //this.orderDate=LocalDate.now();
     }
-<<<<<<< HEAD
-    public Order(Customer customer, LocalDate orderDate, LocalDate requirDate, LocalDate shipDate, double freight,
-=======
 
     public Order(Customer customer, LocalDate orderDate, LocalDate requiredDate, LocalDate shipDate, double freight,
->>>>>>> main
             String shipName, String shipAddress, String shipCity, String shipRegion, String postalCode,
             String shipCountry) {
         this.customer = customer;
@@ -70,12 +66,9 @@ public class Order implements Comparable<Order>{
     public LocalDate getOrderDate() {
         return orderDate;
     }
-<<<<<<< HEAD
 
     //comparazione delle date in modo decrescente, 
     //se avessi voluto fare in modo crescente avrei dovurto methere other. all'interno delle parentesi
-=======
->>>>>>> main
     @Override
     public int compareTo(Order other) {
         if(this.orderDate==null && other.orderDate==null){

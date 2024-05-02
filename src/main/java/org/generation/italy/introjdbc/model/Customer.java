@@ -52,8 +52,6 @@ public class Customer {
     public String getContactName() {
         return contactName;
     }
-<<<<<<< HEAD
-=======
     public String getContactTitle() {
         return contactTitle;
     }
@@ -91,5 +89,4 @@ public class Customer {
         return String.format("Customer [id: %d, companyname: %s, contactname: %s, contacttile: %s, address: %s, city: %s, region: %s, postalcode: %s, country: %s, phone: %s, fax: %s ]"+orders,
                             id,companyName,contactName,contactTitle,address,city,region,postalCode,country,phone,fax);
     }
->>>>>>> main
 }

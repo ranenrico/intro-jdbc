@@ -1,15 +1,9 @@
 package org.generation.italy.introjdbc.model;
 
 public class OrderLine {
-<<<<<<< HEAD
-
-    private int id;
-    private int quantity;
-=======
     private Order order;
     private Product product;
     //lasciamo perdere product id 
->>>>>>> main
     private double price;
     private int quantity;
     private double discount;
@@ -32,8 +26,6 @@ public class OrderLine {
     public double getDiscount() {
         return discount;
     }
-<<<<<<< HEAD
-=======
     public void setUnitPrice(double price) {
        this.price=price;
     }
@@ -43,6 +35,4 @@ public class OrderLine {
     public void setDiscount(double discount) {
         this.discount = discount;
     }
-   
->>>>>>> main
 }

@@ -1,31 +1,8 @@
 package org.generation.italy;
 
-<<<<<<< HEAD
-=======
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-
->>>>>>> main
-import org.generation.italy.introjdbc.model.Category;
-import org.generation.italy.introjdbc.model.Customer;
 import org.generation.italy.introjdbc.model.exceptions.DataException;
-import org.generation.italy.introjdbc.model.repositories.CategoryRepository;
 import org.generation.italy.introjdbc.model.repositories.CustomerRepository;
-import org.generation.italy.introjdbc.model.repositories.JdbcCategoryRepository;
-<<<<<<< HEAD
-
-//costruire repository per i clienti
-//newClient(), ricercaClientNazioni(Nazione)
-//ricercaSingoloClientID(id), ritorno 1 cliente, deve ritornare anche la lista dei suoi ordini (e ogni ordine il suo set di ordinLine)
-//
-=======
 import org.generation.italy.introjdbc.model.repositories.JdbcCustomerRepository;
-import org.postgresql.Driver;
 //REPOSITORY PER CLIENTI-->
 //metodo per creare nuovo cliente
 //ricerca per tutti i clienti di una certa nazione
@@ -33,7 +10,6 @@ import org.postgresql.Driver;
 //avrà lista ordini e ogni ordine lsita di sue linee d'ordine (customer,order,orderdetails) 
 //.ordine ha un customer.customer ha lista di ordini.ordine ha list di linee ordine. linee ordine ha ordine. 
 //tripla join
->>>>>>> main
 
 public class Main {
     private static final String ALL_CATEGORIES = "SELECT categoryid, categoryname, description FROM categories";
