@@ -32,6 +32,15 @@ public class Customer {
         this.fax = fax;
         this.orders=new TreeSet<>();
     }
+    public Customer(int id, String companyName, String contactName, String contactTitle, String address, String city,
+            String region, String postalCode, String country, String phone, String fax) {
+        this(companyName, contactName, contactTitle, address, city, region, postalCode, country, phone, fax);
+        this.id=id;
+        this.orders=new TreeSet<>();
+    }
+    public Customer() {
+        this.orders=new TreeSet<>();
+    }
     public int addOrder(Order or){
         orders.add(or);
         return orders.size();
@@ -45,7 +54,41 @@ public class Customer {
     public String getContactName() {
         return contactName;
     }
-    public Customer() {
-        this.orders=new TreeSet<>();
+    public String getContactTitle() {
+        return contactTitle;
+    }
+    public String getAddress() {
+        return address;
+    }
+    public String getCity() {
+        return city;
+    }
+    public String getRegion() {
+        return region;
+    }
+    public String getPostalCode() {
+        return postalCode;
+    }
+    public String getCountry() {
+        return country;
+    }
+    public String getPhone() {
+        return phone;
+    }
+    public String getFax() {
+        return fax;
+    }
+    public void setCustomerId(int key){
+        this.id=key;
+    }
+    
+    public Set<Order> getOrders() {
+        return orders;
+    }
+
+    @Override
+    public String toString(){
+        return String.format("Customer [id: %d, companyname: %s, contactname: %s, contacttile: %s, address: %s, city: %s, region: %s, postalcode: %s, country: %s, phone: %s, fax: %s ]"+orders,
+                            id,companyName,contactName,contactTitle,address,city,region,postalCode,country,phone,fax);
     }
 }

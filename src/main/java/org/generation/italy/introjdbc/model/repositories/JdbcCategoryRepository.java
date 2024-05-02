@@ -74,10 +74,9 @@ public class JdbcCategoryRepository implements CategoryRepository {
                     }
                     return cats;
                 }
-                
-            } catch(SQLException e){
+        } catch(SQLException e){
                 throw new DataException("Errore nella ricerca di categorie per nome LIKE", e);
-            }
+        }
     }
     @Override
     public boolean deleteById(int id) throws DataException {
