@@ -74,7 +74,7 @@ public class Main {
         //     System.out.println(ac);
         // }
 
-        var c1=cu.getAllById(1);
+        var c1=cu.findByIdWithOrders(1);
         //System.out.println("custid: %s, %s,  c1.getId(),c1.getOrders(),c1.getOrders().getOrderLines() +)";c1.getOrders()
             System.out.println(c1);
 

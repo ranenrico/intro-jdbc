@@ -8,6 +8,6 @@ import org.generation.italy.introjdbc.model.exceptions.DataException;
 public interface CustomerRepository {
     Customer create(Customer customer)throws DataException;
     Iterable<Customer> getByCountry(String country)throws DataException;
-    Customer getAllById(int id)throws DataException;
+    Optional<Customer> findByIdWithOrders(int id)throws DataException;
     Optional<Customer> findById(int id)throws DataException;
 }
