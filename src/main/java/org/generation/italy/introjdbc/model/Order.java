@@ -1,6 +1,5 @@
 package org.generation.italy.introjdbc.model;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
