@@ -107,9 +107,19 @@ public class JdbcCustomerRepository implements CustomerRepository{
     }
 
     @Override
-    public Customer getAllById(int id) throws DataException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllById'");
+    public Optional<Customer> findByIdWithOrders(int id) throws DataException {
+        Optional<Customer> oc = findById(id);
+        if(oc.isEmpty()){
+           return oc; 
+        }
+        try {
+            Set<Order> orders = getFullOrdersForCustomer(id);
+            oc.get().addOrders(orders);
+            return oc;
+        } catch (SQLException e) {
+            throw new DataException("Errore nella ricerca di un customer con ordini per id",e);
+        }
+               
     }
 
     @Override
@@ -177,8 +187,9 @@ public class JdbcCustomerRepository implements CustomerRepository{
                 return orders;
             }
         }
+    }   
 
-    }
+    
 
     // @Override
     // public Customer getAllById(int custId) throws DataException {
