@@ -30,14 +30,14 @@ public class JdbcCategoryRepository implements CategoryRepository {
                                                     WHERE categoryid = ?
                                                     """;
     private static final String UPDATE_CATEGORY = """
-                                                    UPDATE categories
-                                                    SET  categoryname = ?, description = ?
-                                                    WHERE categoryid = ?
+                                                    UPDATE categories 
+                                                    SET categoryname=?, description=?
+                                                    where categoryid=?
                                                     """;
     private static final String INSERT_CATEGORY = """
                                                         INSERT INTO categories
                                                         (categoryName, description)
-                                                        VALUES(?, ?)
+                                                        VALUES(?,?)
                                                         """;
     @Override
     public Iterable<Category> getAll() throws DataException {
@@ -72,10 +72,22 @@ public class JdbcCategoryRepository implements CategoryRepository {
                     }
                     return cats;
                 }
-                
-            } catch(SQLException e){
+        } catch(SQLException e){
                 throw new DataException("Errore nella ricerca di categorie per nome LIKE", e);
-            }
+        }
+    }
+    @Override
+    public boolean deleteById(int id) throws DataException {
+        try(
+            Connection c = ConnectionUtils.createConnection();
+            PreparedStatement ps = c.prepareStatement(DELETE_BY_ID); 
+        ){
+            ps.setInt(1, id);
+            int n = ps.executeUpdate();
+            return n == 1;
+        }catch(SQLException e){
+            throw new DataException("Errore nell'eliminazione di categorie per id", e);
+        }
     }
 
     @Override
@@ -97,59 +109,49 @@ public class JdbcCategoryRepository implements CategoryRepository {
             throw new DataException("Errore nella ricerca di categorie per id", e);
         }
     }
-
-    @Override
-    public boolean deleteById(int id) throws DataException {
-        try(
-            Connection c = ConnectionUtils.createConnection();
-            PreparedStatement ps = c.prepareStatement(DELETE_BY_ID); 
-        ){
-            ps.setInt(1, id);
-            int n = ps.executeUpdate();
-            return n == 1;
-        }catch(SQLException e){
-            throw new DataException("Errore nell'eliminazione di categorie per id", e);
-        }
-    }
-
     @Override
     public Optional<Category> update(Category newCategory) throws DataException {
-        Optional<Category> oldCat = findById(newCategory.getId());
-        if(oldCat.isEmpty()){
+        Optional<Category> oldCategory= findById(newCategory.getId());
+        if(oldCategory.isEmpty()){
             return Optional.empty();
         }
         try(
             Connection c = ConnectionUtils.createConnection();
             PreparedStatement ps = c.prepareStatement(UPDATE_CATEGORY);
         ){
-            ps.setString(1, newCategory.getName());
+            ps.setString (1, newCategory.getName());
             ps.setString(2, newCategory.getDescription());
-            ps.setInt(3, newCategory.getId());
-            ps.executeUpdate();               
-            return oldCat;
+            ps.setInt(3,newCategory.getId());
+            ps.executeUpdate();
+            // if(n!=1){
+            //     return Optional.empty();
+            // }
+            return oldCategory;
+
         }catch(SQLException e){
-            throw new DataException("Errore nella modifica", e);
+            throw new DataException("Errore nella modifica di categorie ", e);
         }
     }
+
 
     @Override
-    public Category create(Category category) throws DataException{
-        try(
-            Connection c = ConnectionUtils.createConnection();
-            PreparedStatement ps = c.prepareStatement(INSERT_CATEGORY, Statement.RETURN_GENERATED_KEYS); 
-        ){
-            ps.setString(1, category.getName());
-            ps.setString(2, category.getDescription());
-            ps.executeUpdate();
-            ResultSet rs = ps.getGeneratedKeys();
-            if(rs.next()){
-                int key = rs.getInt(1);
-                category.setCategoryId(key);
+    public Category create(Category category) throws DataException {
+            try(
+                Connection c = ConnectionUtils.createConnection();
+                PreparedStatement ps = c.prepareStatement(INSERT_CATEGORY,Statement.RETURN_GENERATED_KEYS)){
+                ps.setString(1,category.getName());
+                ps.setString(2,category.getDescription());
+                ps.executeUpdate();
+                ResultSet rs=ps.getGeneratedKeys();
+                if(rs.next()){
+                    int key=rs.getInt(1);
+                    category.setCategoryId(key);
+                }
+                return category;
+            }catch(SQLException e){
+                throw new DataException("Errore nell'aggiunta di categorie ", e);
             }
-            return category;
-        }catch(SQLException e){
-            throw new DataException("Errore nell'aggiunta di una categoria", e);
         }
     }
 
-}
+

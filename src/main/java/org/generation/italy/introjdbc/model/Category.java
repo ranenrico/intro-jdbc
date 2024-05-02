@@ -32,6 +32,6 @@ public class Category {
     }
 
     public void setCategoryId(int key) {
-        this.id = key;
+        this.id=key;
     }
 }
