@@ -51,6 +51,10 @@ public class Order implements Comparable<Order>{
         return orderLines.size();
     }
 
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
     public int getId() {
         return id;
     }

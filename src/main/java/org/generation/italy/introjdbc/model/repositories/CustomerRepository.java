@@ -19,4 +19,5 @@ public interface CustomerRepository<Customer> extends RepositoryInterf<Customer>
     Customer create(Customer obj) throws DataException;
 
     Iterable<Customer> findByNation(String nation) throws DataException;
+    Optional<Customer> findByIdWithOrders(int id) throws DataException;
 }
