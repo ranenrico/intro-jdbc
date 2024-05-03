@@ -10,10 +10,10 @@ import java.sql.Statement;
 import org.generation.italy.introjdbc.model.Category;
 import org.generation.italy.introjdbc.model.Customer;
 import org.generation.italy.introjdbc.model.exceptions.DataException;
-import org.generation.italy.introjdbc.model.repositories.CategoryRepository;
-import org.generation.italy.introjdbc.model.repositories.CustomerRepository;
-import org.generation.italy.introjdbc.model.repositories.JdbcCategoryRepository;
-import org.generation.italy.introjdbc.model.repositories.JdbcCustomerRepository;
+import org.generation.italy.introjdbc.model.repositories.abstractions.CategoryRepository;
+import org.generation.italy.introjdbc.model.repositories.abstractions.CustomerRepository;
+import org.generation.italy.introjdbc.model.repositories.implementations.JdbcCategoryRepository;
+import org.generation.italy.introjdbc.model.repositories.implementations.JdbcCustomerRepository;
 import org.postgresql.Driver;
 
 //costruire repository per i clienti

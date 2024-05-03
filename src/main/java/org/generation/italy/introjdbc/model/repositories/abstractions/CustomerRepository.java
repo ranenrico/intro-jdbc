@@ -1,10 +1,10 @@
-package org.generation.italy.introjdbc.model.repositories;
+package org.generation.italy.introjdbc.model.repositories.abstractions;
 
 import java.util.Optional;
 
 import org.generation.italy.introjdbc.model.exceptions.DataException;
 
-public interface CustomerRepository<Customer> extends RepositoryInterf<Customer>{
+public interface CustomerRepository<Customer> extends CrudRepository<Customer>{
     @Override
     Iterable<Customer> getAll() throws DataException;
     @Override
@@ -19,5 +19,6 @@ public interface CustomerRepository<Customer> extends RepositoryInterf<Customer>
     Customer create(Customer obj) throws DataException;
 
     Iterable<Customer> findByNation(String nation) throws DataException;
+
     Optional<Customer> findByIdWithOrders(int id) throws DataException;
 }

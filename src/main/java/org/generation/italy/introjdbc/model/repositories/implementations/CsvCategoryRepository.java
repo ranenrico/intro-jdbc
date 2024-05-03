@@ -1,4 +1,4 @@
-package org.generation.italy.introjdbc.model.repositories;
+package org.generation.italy.introjdbc.model.repositories.implementations;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.generation.italy.introjdbc.model.Category;
 import org.generation.italy.introjdbc.model.exceptions.DataException;
+import org.generation.italy.introjdbc.model.repositories.abstractions.CategoryRepository;
 
 public class CsvCategoryRepository implements CategoryRepository<Category>{
 

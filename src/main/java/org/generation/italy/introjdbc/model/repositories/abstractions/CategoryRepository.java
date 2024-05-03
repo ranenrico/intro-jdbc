@@ -1,10 +1,10 @@
-package org.generation.italy.introjdbc.model.repositories;
+package org.generation.italy.introjdbc.model.repositories.abstractions;
 
 import java.util.Optional;
 
 import org.generation.italy.introjdbc.model.exceptions.DataException;
 
-public interface CategoryRepository<Category> extends RepositoryInterf<Category>{
+public interface CategoryRepository<Category> extends CrudRepository<Category>{
 
     @Override
     Category create(Category obj) throws DataException;

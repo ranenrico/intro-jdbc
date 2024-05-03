@@ -1,4 +1,4 @@
-package org.generation.italy.introjdbc.model.repositories;
+package org.generation.italy.introjdbc.model.repositories.implementations;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import org.generation.italy.introjdbc.model.Category;
 import org.generation.italy.introjdbc.model.exceptions.DataException;
+import org.generation.italy.introjdbc.model.repositories.abstractions.CategoryRepository;
 import org.generation.italy.introjdbc.utils.ConnectionUtils;
 
 public class JdbcCategoryRepository implements CategoryRepository<Category> {
@@ -39,6 +40,9 @@ public class JdbcCategoryRepository implements CategoryRepository<Category> {
                                                         (categoryName, description)
                                                         VALUES(?, ?)
                                                         """;
+
+    private JdbcTemplate<Category> template = new JdbcTemplate<>();
+
     @Override
     public Iterable<Category> getAll() throws DataException {
         try(
@@ -60,22 +64,25 @@ public class JdbcCategoryRepository implements CategoryRepository<Category> {
 
     @Override
     public Iterable<Category> getByNameLike(String part) throws DataException {
-        try(
-            Connection c = ConnectionUtils.createConnection();
-            PreparedStatement ps = c.prepareStatement(ALL_CATEGORIES_NAME_LIKE);
-        ){
-                ps.setString(1, "%"+part+"%");
-                try(ResultSet rs = ps.executeQuery()){
-                    Collection<Category> cats = new ArrayList<>();
-                    while(rs.next()){
-                        cats.add(new Category(rs.getInt("categoryid"), rs.getString("categoryname"), rs.getString("description")));
-                    }
-                    return cats;
-                }
+        return template.query(ALL_CATEGORIES_NAME_LIKE, ps -> ps.setString(1, "%"+part+"%"), 
+        rs -> new Category(rs.getInt("categoryid"), rs.getString("categoryname"), rs.getString("description"))
+        );
+        // try(
+        //     Connection c = ConnectionUtils.createConnection();
+        //     PreparedStatement ps = c.prepareStatement(ALL_CATEGORIES_NAME_LIKE);
+        // ){
+        //         ps.setString(1, "%"+part+"%");
+        //         try(ResultSet rs = ps.executeQuery()){
+        //             Collection<Category> cats = new ArrayList<>();
+        //             while(rs.next()){
+        //                 cats.add(new Category(rs.getInt("categoryid"), rs.getString("categoryname"), rs.getString("description")));
+        //             }
+        //             return cats;
+        //         }
                 
-            } catch(SQLException e){
-                throw new DataException("Errore nella ricerca di categorie per nome LIKE", e);
-            }
+        //     } catch(SQLException e){
+        //         throw new DataException("Errore nella ricerca di categorie per nome LIKE", e);
+        //     }
     }
 
     @Override

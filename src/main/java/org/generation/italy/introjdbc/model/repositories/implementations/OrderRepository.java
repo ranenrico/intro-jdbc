@@ -1,11 +1,12 @@
-package org.generation.italy.introjdbc.model.repositories;
+package org.generation.italy.introjdbc.model.repositories.implementations;
 
 import java.util.Optional;
 
 import org.generation.italy.introjdbc.model.Order;
 import org.generation.italy.introjdbc.model.exceptions.DataException;
+import org.generation.italy.introjdbc.model.repositories.abstractions.CrudRepository;
 
-public interface OrderRepository<Order> extends RepositoryInterf<Order> {
+public interface OrderRepository<Order> extends CrudRepository<Order> {
     @Override
     Iterable<Order> getAll() throws DataException;
     @Override

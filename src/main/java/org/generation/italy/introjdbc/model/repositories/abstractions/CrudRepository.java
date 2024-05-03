@@ -1,10 +1,10 @@
-package org.generation.italy.introjdbc.model.repositories;
+package org.generation.italy.introjdbc.model.repositories.abstractions;
 
 import java.util.Optional;
 
 import org.generation.italy.introjdbc.model.exceptions.DataException;
 
-public interface RepositoryInterf<T> {
+public interface CrudRepository<T> {
     Iterable<T> getAll() throws DataException;
     Iterable<T> getByNameLike(String part) throws DataException;
     Optional<T> findById(int id) throws DataException;
