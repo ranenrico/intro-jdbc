@@ -2,6 +2,7 @@ package org.generation.italy.introjdbc.model.repositories.implementations;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import org.generation.italy.introjdbc.model.Category;
@@ -20,33 +21,39 @@ public class CsvCategoryRepository implements CategoryRepository{
     }
 
     @Override
-    public Iterable<Category> getByNameLike(String part) {
+    public Category save(Category entity) throws DataException {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getByNameLike'");
+        throw new UnsupportedOperationException("Unimplemented method 'save'");
     }
 
     @Override
-    public Optional<Category> findById(int id) {
+    public Optional<Category> findById(Integer id) throws DataException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'findById'");
     }
 
     @Override
-    public boolean deleteById(int id) {
+    public List<Category> findAll() throws DataException {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
+        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
     }
 
     @Override
-    public Optional<Category> update(Category newCategory) {
+    public void update(Category entity) throws DataException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'update'");
     }
 
     @Override
-    public Category create(Category category) {
+    public void deleteById(Integer id) throws DataException {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'create'");
+        throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
+    }
+
+    @Override
+    public Iterable<Category> getByNameLike(String part) throws DataException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getByNameLike'");
     }
 
 }

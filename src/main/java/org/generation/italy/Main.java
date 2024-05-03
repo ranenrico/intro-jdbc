@@ -1,14 +1,8 @@
 package org.generation.italy;
 
 import org.generation.italy.introjdbc.model.exceptions.DataException;
-<<<<<<< HEAD
-=======
-import org.generation.italy.introjdbc.model.repositories.abstractions.CategoryRepository;
 import org.generation.italy.introjdbc.model.repositories.abstractions.CustomerRepository;
-import org.generation.italy.introjdbc.model.repositories.implementations.JdbcCategoryRepository;
 import org.generation.italy.introjdbc.model.repositories.implementations.JdbcCustomerRepository;
-import org.postgresql.Driver;
->>>>>>> main
 //REPOSITORY PER CLIENTI-->
 //metodo per creare nuovo cliente
 //ricerca per tutti i clienti di una certa nazione

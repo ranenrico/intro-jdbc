@@ -1,9 +1,4 @@
 package org.generation.italy.introjdbc.model.repositories.abstractions;
-
-<<<<<<< HEAD
-=======
-import java.util.Optional;
->>>>>>> main
 import org.generation.italy.introjdbc.model.Category;
 import org.generation.italy.introjdbc.model.exceptions.DataException;
 
