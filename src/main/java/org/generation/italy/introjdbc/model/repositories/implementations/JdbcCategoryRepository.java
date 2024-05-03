@@ -46,59 +46,22 @@ public class JdbcCategoryRepository implements CategoryRepository {
 
     @Override
     public List<Category> findAll() throws DataException {
-        try (
-                Connection c = ConnectionUtils.createConnection();
-                Statement stmt = c.createStatement();
-                ResultSet rs = stmt.executeQuery(ALL_CATEGORIES)) {
-            List<Category> cats = new ArrayList<>();
-            while (rs.next()) {
-                // int id = rs.getInt("categoryid");
-                // String name = rs.getString("categoryname");
-                // String desc = rs.getString("description");
-                cats.add(new Category(rs.getInt("categoryid"), rs.getString("categoryname"),
-                        rs.getString("description")));
-            }
-            return cats;
-        } catch (SQLException e) {
-            throw new DataException("Errore nella lettura delle categorie del database", e);
-        }
+        return template.query(ALL_CATEGORIES, this::fromResultSet);
     }
 
     @Override
     public Iterable<Category> getByNameLike(String part) throws DataException {
-        return template.query(ALL_CATEGORIES_NAME_LIKE, ps -> ps.setString(1, "%" + part + "%"),
-                rs -> new Category(rs.getInt("categoryid"), rs.getString("categoryname"), rs.getString("description")));
+        return template.query(ALL_CATEGORIES_NAME_LIKE, ps -> ps.setString(1, "%" + part + "%"), this::fromResultSet);
     }
 
     @Override
     public void deleteById(Integer id) throws DataException {
-        try (
-                Connection c = ConnectionUtils.createConnection();
-                PreparedStatement ps = c.prepareStatement(DELETE_BY_ID);) {
-            ps.setInt(1, id);
-            int n = ps.executeUpdate();
-        } catch (SQLException e) {
-            throw new DataException("Errore nell'eliminazione di categorie per id", e);
-        }
+        template.update(DELETE_BY_ID, id);
     }
 
     @Override
     public Optional<Category> findById(Integer id) throws DataException {
-        try (
-                Connection c = ConnectionUtils.createConnection();
-                PreparedStatement ps = c.prepareStatement(CATEGORY_BY_ID);) {
-            ps.setInt(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return Optional.of(new Category(rs.getInt("categoryid"),
-                            rs.getString("categoryname"), rs.getString("description")));
-                } else {
-                    return Optional.empty();
-                }
-            }
-        } catch (SQLException e) {
-            throw new DataException("Errore nella ricerca di categorie per id", e);
-        }
+        return template.queryForObject(CATEGORY_BY_ID, this::fromResultSet, id);
     }
 
     @Override
@@ -125,20 +88,15 @@ public class JdbcCategoryRepository implements CategoryRepository {
 
     @Override
     public Category save(Category category) throws DataException {
-        try (
-                Connection c = ConnectionUtils.createConnection();
-                PreparedStatement ps = c.prepareStatement(INSERT_CATEGORY, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setString(1, category.getName());
-            ps.setString(2, category.getDescription());
-            ps.executeUpdate();
-            ResultSet rs = ps.getGeneratedKeys();
-            if (rs.next()) {
-                int key = rs.getInt(1);
-                category.setCategoryId(key);
-            }
-            return category;
-        } catch (SQLException e) {
-            throw new DataException("Errore nell'aggiunta di categorie ", e);
-        }
+        KeyHolder kh = new KeyHolder();
+        template.insert(INSERT_CATEGORY, kh, category.getName(), category.getDescription());
+        category.setCategoryId(kh.getKey().intValue());
+        return category;
+    }
+
+    private Category fromResultSet(ResultSet rs)throws SQLException{
+        return new Category(rs.getInt("categoryid"), 
+                            rs.getString("categoryname"), 
+                            rs.getString("description"));
     }
 }
