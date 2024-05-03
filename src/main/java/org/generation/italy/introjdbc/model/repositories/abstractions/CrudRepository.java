@@ -9,6 +9,6 @@ public interface CrudRepository<T> {
     Iterable<T> getByNameLike(String part) throws DataException;
     Optional<T> findById(int id) throws DataException;
     boolean deleteById(int id) throws DataException;
-    Optional<T> update(T obj) throws DataException;
+    void update(T obj) throws DataException;
     T create(T obj) throws DataException;
 }

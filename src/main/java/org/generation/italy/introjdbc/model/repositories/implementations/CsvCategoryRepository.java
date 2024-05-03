@@ -38,7 +38,7 @@ public class CsvCategoryRepository implements CategoryRepository<Category>{
     }
 
     @Override
-    public Optional<Category> update(Category newCategory) {
+    public void update(Category newCategory) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'update'");
     }

@@ -22,8 +22,9 @@ public class Customer {
         this.orders = new TreeSet<>();
     }
 
-    public Customer(String companyName, String contactName, String contactTitle, String address, String city,
+    public Customer(int id, String companyName, String contactName, String contactTitle, String address, String city,
             String region, String postalCode, String country, String phone, String fax) {
+        this.id = id;
         this.companyName = companyName;
         this.contactName = contactName;
         this.contactTitle = contactTitle;
@@ -94,6 +95,10 @@ public class Customer {
 
     public void setCategoryId(int key) {
         this.id = key;
+    }
+
+    public void setCustomerId(int intValue) {
+        this.id = intValue;
     }
     
 }

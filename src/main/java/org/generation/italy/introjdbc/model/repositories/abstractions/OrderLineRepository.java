@@ -1,10 +1,9 @@
-package org.generation.italy.introjdbc.model.repositories.implementations;
+package org.generation.italy.introjdbc.model.repositories.abstractions;
 
 import java.util.Optional;
 
 import org.generation.italy.introjdbc.model.OrderLine;
 import org.generation.italy.introjdbc.model.exceptions.DataException;
-import org.generation.italy.introjdbc.model.repositories.abstractions.CrudRepository;
 
 public interface OrderLineRepository<OrderLine> extends CrudRepository<OrderLine>{
     @Override
@@ -16,7 +15,7 @@ public interface OrderLineRepository<OrderLine> extends CrudRepository<OrderLine
     @Override
     boolean deleteById(int id) throws DataException;
     @Override
-    Optional<OrderLine> update(OrderLine newOrderLine) throws DataException;
+    void update(OrderLine newOrderLine) throws DataException;
     @Override
     OrderLine create(OrderLine orderline) throws DataException;
     

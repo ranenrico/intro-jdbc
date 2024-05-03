@@ -14,7 +14,7 @@ public interface CustomerRepository<Customer> extends CrudRepository<Customer>{
     @Override
     boolean deleteById(int id) throws DataException;
     @Override
-    Optional<Customer> update(Customer obj) throws DataException;
+    void update(Customer obj) throws DataException;
     @Override
     Customer create(Customer obj) throws DataException;
 

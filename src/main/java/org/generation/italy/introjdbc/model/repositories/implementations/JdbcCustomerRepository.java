@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.sql.*;
 import java.util.*;
 
+import org.generation.italy.introjdbc.model.Category;
 import org.generation.italy.introjdbc.model.Customer;
 import org.generation.italy.introjdbc.model.Order;
 import org.generation.italy.introjdbc.model.OrderLine;
@@ -28,12 +29,12 @@ public class JdbcCustomerRepository implements CustomerRepository<Customer>{
                                                     DELETE FROM customers
                                                     WHERE custid = ?
                                                     """;
-    private static final String UPDATE_CATEGORY = """
+    private static final String UPDATE_CUSTOMER = """
                                                     UPDATE customers
                                                     SET  companyname = ?, contactname = ?, contacttitle = ?, address = ?, city = ?, region = ?, postalcode = ?, country = ?, phone = ?, fax = ?
                                                     WHERE custid = ?
                                                     """;
-    private static final String INSERT_CATEGORY = """
+    private static final String INSERT_CUSTOMER = """
                                                         INSERT INTO customers
                                                         (custid, companyname, contactname, contacttitle, address, city, region, postalcode, country, phone, fax)
                                                         VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -53,23 +54,11 @@ public class JdbcCustomerRepository implements CustomerRepository<Customer>{
             ORDER BY orderid, orderdate DESC
             """;
 
+    private JdbcTemplate<Customer> template = new JdbcTemplate<>();        
+
     @Override
     public Iterable<Customer> getAll() throws DataException {
-        try(
-            Connection c = ConnectionUtils.createConnection();
-            Statement stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery(ALL_CUSTOMER)){
-                Collection<Customer> cats = new ArrayList<>();
-                while(rs.next()){
-                    // int id = rs.getInt("categoryid");
-                    // String name = rs.getString("categoryname");
-                    // String desc = rs.getString("description");
-                    cats.add(new Customer(rs.getString("companyname"), rs.getString("contactname"), rs.getString("contacttitle"), rs.getString("address"), rs.getString("city"), rs.getString("region"), rs.getString("postalcode"), rs.getString("country"), rs.getString("phone"), rs.getString("fax")));               
-                }
-                return cats;
-            } catch(SQLException e){
-            throw new DataException("Errore nella lettura dei clienti del database", e);
-        }
+        return template.query(ALL_CUSTOMER, this::fromResultSet);
     }
 
     @Override
@@ -82,7 +71,7 @@ public class JdbcCustomerRepository implements CustomerRepository<Customer>{
                 try(ResultSet rs = ps.executeQuery()){
                     Collection<Customer> cats = new ArrayList<>();
                     while(rs.next()){
-                        cats.add(new Customer(rs.getString("companyname"), rs.getString("contactname"), rs.getString("contacttitle"), rs.getString("address"), rs.getString("city"), rs.getString("region"), rs.getString("postalcode"), rs.getString("country"), rs.getString("phone"), rs.getString("fax")));
+                        cats.add(new Customer(rs.getInt("custid"), rs.getString("companyname"), rs.getString("contactname"), rs.getString("contacttitle"), rs.getString("address"), rs.getString("city"), rs.getString("region"), rs.getString("postalcode"), rs.getString("country"), rs.getString("phone"), rs.getString("fax")));
                     }
                     return cats;
                 }
@@ -94,21 +83,7 @@ public class JdbcCustomerRepository implements CustomerRepository<Customer>{
 
     @Override
     public Optional<Customer> findById(int id) throws DataException {
-        try(
-            Connection c = ConnectionUtils.createConnection();
-            PreparedStatement ps = c.prepareStatement(CUSTOMER_BY_ID);
-        ){
-            ps.setInt(1, id);
-            try(ResultSet rs = ps.executeQuery()){
-                if(rs.next()){
-                    return Optional.of(new Customer(rs.getString("companyname"), rs.getString("contactname"), rs.getString("contacttitle"), rs.getString("address"), rs.getString("city"), rs.getString("region"), rs.getString("postalcode"), rs.getString("country"), rs.getString("phone"), rs.getString("fax")));
-                } else {
-                    return Optional.empty();
-                }
-            }
-        }catch(SQLException e){
-            throw new DataException("Errore nella ricerca di clienti per id", e);
-        }
+        return template.queryForObject(CUSTOMER_BY_ID, this::fromResultSet, id);
     }
 
     @Override
@@ -126,31 +101,29 @@ public class JdbcCustomerRepository implements CustomerRepository<Customer>{
     }
 
     @Override
-    public Optional<Customer> update(Customer newCategory) throws DataException {
-        Optional<Customer> oldCat = findById(newCategory.getId());
-        if(oldCat.isEmpty()){
-            return Optional.empty();
-        }
-        try(
-            Connection c = ConnectionUtils.createConnection();
-            PreparedStatement ps = c.prepareStatement(UPDATE_CATEGORY);
-        ){
-            ps.setString(1, newCategory.getCompanyName());
-            ps.setString(2, newCategory.getContactName());
-            ps.setInt(11, newCategory.getId());
-            ps.executeUpdate();               
-            return oldCat;
-        }catch(SQLException e){
-            throw new DataException("Errore nella modifica di un cliente", e);
-        }
+    public void update(Customer newCategory) throws DataException {
+        template.update(UPDATE_CUSTOMER, newCategory.getCompanyName(), newCategory.getContactName(), newCategory.getId());
     }
 
     @Override
-    public Customer create(Customer customer) throws DataException{
-        try(
-            Connection c = ConnectionUtils.createConnection();
-            PreparedStatement ps = c.prepareStatement(INSERT_CATEGORY, Statement.RETURN_GENERATED_KEYS); 
-        ){
+    public Customer create(Customer c) throws DataException{
+        KeyHolder key = new KeyHolder();
+        template.insert(INSERT_CUSTOMER, key,    
+                                        c.getCompanyName(),
+                                        c.getContactName(),
+                                        c.getContactTitle(),
+                                        c.getAddress(),
+                                        c.getCity(),
+                                        c.getRegion(),
+                                        c.getPostalCode(),
+                                        c.getCountry(),
+                                        c.getPhone(),
+                                        c.getFax());
+        c.setCustomerId(key.getKey().intValue());
+        return c;
+    }
+
+    private void setCustomerParameters(PreparedStatement ps, Customer customer) throws SQLException{
             ps.setString(2, customer.getCompanyName());
             ps.setString(3, customer.getContactName());
             ps.setString(4, customer.getContactTitle());
@@ -161,36 +134,17 @@ public class JdbcCustomerRepository implements CustomerRepository<Customer>{
             ps.setString(9, customer.getCountry());
             ps.setString(10, customer.getPhone());
             ps.setString(11, customer.getFax());
-            ps.executeUpdate();
-            ResultSet rs = ps.getGeneratedKeys();
-            if(rs.next()){
-                int key = rs.getInt(1);
-                customer.setCategoryId(key);
-            }
-            return customer;
-        }catch(SQLException e){
-            throw new DataException("Errore nell'aggiunta di una cliente", e);
-        }
     }
 
     @Override
     public Iterable<Customer> findByNation(String nation) throws DataException {
-        try(
-            Connection c = ConnectionUtils.createConnection();
-            PreparedStatement ps = c.prepareStatement(CUSTOMER_BY_NATION);
-        ){
-            ps.setString(1, nation);
-            try(ResultSet rs = ps.executeQuery()){
-                Collection<Customer> customers = new ArrayList<>();
-                while(rs.next()){
-                    customers.add(new Customer(rs.getString("companyname"), rs.getString("contactname"), rs.getString("contacttitle"), rs.getString("address"), rs.getString("city"), rs.getString("region"), rs.getString("postalcode"), rs.getString("country"), rs.getString("phone"), rs.getString("fax")));
-                } 
-                    return customers;
-                
-            }
-        }catch(SQLException e){
-            throw new DataException("Errore nella ricerca di clienti per nazionalità", e);
-        }
+        return template.query(CUSTOMER_BY_NATION, 
+                                this::fromResultSet,
+                                nation);
+    }
+
+    private Customer fromResultSet(ResultSet rs) throws SQLException{
+        return new Customer(rs.getInt("custid"), rs.getString("companyname"), rs.getString("contactname"), rs.getString("contacttitle"), rs.getString("address"), rs.getString("city"), rs.getString("region"), rs.getString("postalcode"), rs.getString("country"), rs.getString("phone"), rs.getString("fax"));                      
     }
 
     private Set<Order> getFullOrdersForCustomer(int custid) throws SQLException{

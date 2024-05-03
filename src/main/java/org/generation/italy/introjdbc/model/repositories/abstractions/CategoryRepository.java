@@ -22,6 +22,6 @@ public interface CategoryRepository<Category> extends CrudRepository<Category>{
     Iterable<Category> getByNameLike(String part) throws DataException;
 
     @Override
-    Optional<Category> update(Category obj) throws DataException;
+    void update(Category obj) throws DataException;
 
 }
