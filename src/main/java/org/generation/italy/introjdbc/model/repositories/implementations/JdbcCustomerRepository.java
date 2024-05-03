@@ -1,23 +1,15 @@
-package org.generation.italy.introjdbc.model.repositories;
+package org.generation.italy.introjdbc.model.repositories.implementations;
 
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeSet;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.*;
+import java.sql.*;
+import java.sql.Date;
 
 import org.generation.italy.introjdbc.model.Customer;
 import org.generation.italy.introjdbc.model.Order;
 import org.generation.italy.introjdbc.model.OrderLine;
 import org.generation.italy.introjdbc.model.Product;
 import org.generation.italy.introjdbc.model.exceptions.DataException;
+import org.generation.italy.introjdbc.model.repositories.abstractions.CustomerRepository;
 import org.generation.italy.introjdbc.utils.ConnectionUtils;
 
 public class JdbcCustomerRepository implements CustomerRepository{
@@ -55,7 +47,7 @@ public class JdbcCustomerRepository implements CustomerRepository{
                 
 
     @Override
-    public Customer create(Customer customer) throws DataException {
+    public Customer save(Customer customer) throws DataException {
        try(Connection conn=ConnectionUtils.createConnection();
           PreparedStatement ps=conn.prepareStatement(INSERT_CUSTOMER, Statement.RETURN_GENERATED_KEYS); 
        ){
@@ -176,6 +168,29 @@ public class JdbcCustomerRepository implements CustomerRepository{
             }
         }
 
+    }
+
+    @Override
+    public Optional<Customer> findById(Integer id) throws DataException {
+        
+    }
+
+    @Override
+    public List<Customer> findAll() throws DataException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
+    }
+
+    @Override
+    public void update(Customer entity) throws DataException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'update'");
+    }
+
+    @Override
+    public void deleteById(Integer id) throws DataException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
     }
 
     // @Override

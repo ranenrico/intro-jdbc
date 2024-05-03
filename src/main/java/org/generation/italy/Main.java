@@ -1,8 +1,6 @@
 package org.generation.italy;
 
 import org.generation.italy.introjdbc.model.exceptions.DataException;
-import org.generation.italy.introjdbc.model.repositories.CustomerRepository;
-import org.generation.italy.introjdbc.model.repositories.JdbcCustomerRepository;
 //REPOSITORY PER CLIENTI-->
 //metodo per creare nuovo cliente
 //ricerca per tutti i clienti di una certa nazione
@@ -10,6 +8,8 @@ import org.generation.italy.introjdbc.model.repositories.JdbcCustomerRepository;
 //avrà lista ordini e ogni ordine lsita di sue linee d'ordine (customer,order,orderdetails) 
 //.ordine ha un customer.customer ha lista di ordini.ordine ha list di linee ordine. linee ordine ha ordine. 
 //tripla join
+import org.generation.italy.introjdbc.model.repositories.abstractions.CustomerRepository;
+import org.generation.italy.introjdbc.model.repositories.implementations.JdbcCustomerRepository;
 
 public class Main {
     private static final String ALL_CATEGORIES = "SELECT categoryid, categoryname, description FROM categories";

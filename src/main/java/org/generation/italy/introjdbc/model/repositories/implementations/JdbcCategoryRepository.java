@@ -1,4 +1,4 @@
-package org.generation.italy.introjdbc.model.repositories;
+package org.generation.italy.introjdbc.model.repositories.implementations;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import org.generation.italy.introjdbc.model.Category;
 import org.generation.italy.introjdbc.model.exceptions.DataException;
+import org.generation.italy.introjdbc.model.repositories.abstractions.CategoryRepository;
 import org.generation.italy.introjdbc.utils.ConnectionUtils;
 
 public class JdbcCategoryRepository implements CategoryRepository {
