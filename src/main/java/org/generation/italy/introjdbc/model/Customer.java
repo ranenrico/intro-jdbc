@@ -1,5 +1,11 @@
 package org.generation.italy.introjdbc.model;
 
+<<<<<<< HEAD
+=======
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+>>>>>>> main
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -41,7 +47,12 @@ public class Customer {
     }
     public int addOrder(Order or){
         orders.add(or);
+        or.setCustomer(this);
         return orders.size();
+    }
+    public void addOrders(Collection<Order> newOrders){
+        newOrders.stream().forEach(o -> o.setCustomer(this));
+        orders.addAll(newOrders);       
     }
     public int getId() {
         return id;

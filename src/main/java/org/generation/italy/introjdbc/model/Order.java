@@ -62,6 +62,9 @@ public class Order implements Comparable<Order>{
     public Customer getCustomer() {
         return customer;
     }
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
     public LocalDate getOrderDate() {
         return orderDate;
     }

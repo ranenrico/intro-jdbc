@@ -1,9 +1,15 @@
 package org.generation.italy.introjdbc.model.repositories.implementations;
+<<<<<<< HEAD
 
 import java.util.*;
 import java.sql.*;
 import java.sql.Date;
+=======
+>>>>>>> main
 
+import java.sql.*;
+import java.util.*;
+import java.sql.Date;
 import org.generation.italy.introjdbc.model.Customer;
 import org.generation.italy.introjdbc.model.Order;
 import org.generation.italy.introjdbc.model.OrderLine;
@@ -42,6 +48,7 @@ public class JdbcCustomerRepository implements CustomerRepository{
         where custid=?
         order by orderid, orderdate desc
             """;
+<<<<<<< HEAD
     
                     
                 
@@ -74,6 +81,8 @@ public class JdbcCustomerRepository implements CustomerRepository{
        }
 
  }
+=======
+>>>>>>> main
 
     @Override
     public Iterable<Customer> getByCountry(String country) throws DataException {
@@ -97,9 +106,19 @@ public class JdbcCustomerRepository implements CustomerRepository{
     }
 
     @Override
-    public Customer getAllById(int id) throws DataException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllById'");
+    public Optional<Customer> findByIdWithOrders(int id) throws DataException {
+        Optional<Customer> oc = findById(id);
+        if(oc.isEmpty()){
+           return oc; 
+        }
+        try {
+            Set<Order> orders = getFullOrdersForCustomer(id);
+            oc.get().addOrders(orders);
+            return oc;
+        } catch (SQLException e) {
+            throw new DataException("Errore nella ricerca di un customer con ordini per id",e);
+        }
+               
     }
 
     @Override
@@ -167,10 +186,41 @@ public class JdbcCustomerRepository implements CustomerRepository{
                 return orders;
             }
         }
-
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public Customer save(Customer customer) throws DataException {
+        try(Connection conn=ConnectionUtils.createConnection();
+        PreparedStatement ps=conn.prepareStatement(INSERT_CUSTOMER, Statement.RETURN_GENERATED_KEYS); 
+     ){
+      ps.setString(1,customer.getCompanyName());
+      ps.setString(2,customer.getContactName());
+      ps.setString(3,customer.getContactTitle());
+      ps.setString(4,customer.getAddress());
+      ps.setString(5,customer.getCity());
+      ps.setString(6,customer.getRegion());
+      ps.setString(7,customer.getPostalCode());
+      ps.setString(8,customer.getCountry());
+      ps.setString(9,customer.getPhone());
+      ps.setString(10,customer.getFax());
+      ps.executeUpdate();
+      try(ResultSet rs=ps.getGeneratedKeys()){
+          if(rs.next()){
+              int key=rs.getInt(1);
+              customer.setCustomerId(key);
+          }
+      }
+      return customer;
+     }catch(SQLException e){
+          throw new DataException("Errore nell'inserimento di un cliente ", e);
+     }
+        
+    }
+
+    @Override
+>>>>>>> main
     public Optional<Customer> findById(Integer id) throws DataException {
         
     }
@@ -182,7 +232,11 @@ public class JdbcCustomerRepository implements CustomerRepository{
     }
 
     @Override
+<<<<<<< HEAD
     public void update(Customer entity) throws DataException {
+=======
+    public void update(Customer newEntity) throws DataException {
+>>>>>>> main
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'update'");
     }
@@ -191,7 +245,13 @@ public class JdbcCustomerRepository implements CustomerRepository{
     public void deleteById(Integer id) throws DataException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
+<<<<<<< HEAD
     }
+=======
+    }   
+
+    
+>>>>>>> main
 
     // @Override
     // public Customer getAllById(int custId) throws DataException {

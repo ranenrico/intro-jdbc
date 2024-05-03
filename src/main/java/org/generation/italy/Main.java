@@ -1,6 +1,14 @@
 package org.generation.italy;
 
 import org.generation.italy.introjdbc.model.exceptions.DataException;
+<<<<<<< HEAD
+=======
+import org.generation.italy.introjdbc.model.repositories.abstractions.CategoryRepository;
+import org.generation.italy.introjdbc.model.repositories.abstractions.CustomerRepository;
+import org.generation.italy.introjdbc.model.repositories.implementations.JdbcCategoryRepository;
+import org.generation.italy.introjdbc.model.repositories.implementations.JdbcCustomerRepository;
+import org.postgresql.Driver;
+>>>>>>> main
 //REPOSITORY PER CLIENTI-->
 //metodo per creare nuovo cliente
 //ricerca per tutti i clienti di una certa nazione
@@ -62,7 +70,7 @@ public class Main {
         //     System.out.println(ac);
         // }
 
-        var c1=cu.getAllById(1);
+        var c1=cu.findByIdWithOrders(1);
         //System.out.println("custid: %s, %s,  c1.getId(),c1.getOrders(),c1.getOrders().getOrderLines() +)";c1.getOrders()
             System.out.println(c1);
 

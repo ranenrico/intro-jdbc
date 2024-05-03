@@ -41,10 +41,15 @@ public class JdbcCategoryRepository implements CategoryRepository {
                                                         (categoryName, description)
                                                         VALUES(?,?)
                                                         """;
+<<<<<<< HEAD
 
     private JdbcTemplate<Category> template = new JdbcTemplate<>();
 
     
+=======
+    private JdbcTemplate<Category> template = new JdbcTemplate<>();
+
+>>>>>>> main
     @Override
     public List<Category> findAll() throws DataException {
         try(
@@ -66,8 +71,13 @@ public class JdbcCategoryRepository implements CategoryRepository {
 
     @Override
     public Iterable<Category> getByNameLike(String part) throws DataException {
+<<<<<<< HEAD
         return template.query(ALL_CATEGORIES_NAME_LIKE, ps -> ps.setString(1, "%" + part + "%"), 
         rs -> 
+=======
+        return template.query(ALL_CATEGORIES_NAME_LIKE, ps -> ps.setString(1, "%" + part + "%"),
+        rs -> new Category(rs.getInt("categoryid"), rs.getString("categoryname"), rs.getString("description"))
+>>>>>>> main
         );
     }
 
