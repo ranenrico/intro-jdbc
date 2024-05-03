@@ -4,31 +4,29 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import org.generation.italy.introjdbc.model.Customer;
 import org.generation.italy.introjdbc.model.exceptions.DataException;
+import org.generation.italy.introjdbc.model.repositories.abstractions.PreparedStatementSetter;
+import org.generation.italy.introjdbc.model.repositories.abstractions.RowMapper;
 import org.generation.italy.introjdbc.utils.ConnectionUtils;
 
 public class JdbcTemplate<T>{
 
-    List<T> query(String sql){
+    List<T> query(String sql, PreparedStatementSetter psSetter, RowMapper<T> mapper) throws DataException{
         try(Connection c = ConnectionUtils.createConnection();
         PreparedStatement ps = c.prepareStatement(sql)){
-            ps.setInt(1,id);
-            try(ResultSet rs=ps.executeQuery()){
-                if(rs.next()){
-                    return Optional.of(new Customer(rs.getInt("custid"),rs.getString("companyname"), rs.getString("contactname"), rs.getString("contacttitle"),
-                    rs.getString("address"), rs.getString("city"), rs.getString("region"),rs.getString("postalcode") , 
-                    rs.getString("country"),rs.getString("phone"), rs.getString("fax")));
-                } else {
-                    return Optional.empty();
+            psSetter.setParamitres(ps);
+            try(ResultSet rs = ps.executeQuery()){
+                List<T> elements = new ArrayList<>();
+                while(rs.next()){
+                    elements.add(mapper.mapRow(rs));
                 }
-            
+                return elements;
             }
         }catch(SQLException e){
-            throw new DataException("Errore nella ricerca del cliente per id",e);
+            throw new DataException("Errore nella query" , e);
         }
     }
 
