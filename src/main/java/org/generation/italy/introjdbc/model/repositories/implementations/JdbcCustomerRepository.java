@@ -1,25 +1,14 @@
-package org.generation.italy.introjdbc.model.repositories;
+package org.generation.italy.introjdbc.model.repositories.implementations;
 
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeSet;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
+import java.sql.*;
+import java.util.*;
+import java.sql.Date;
 import org.generation.italy.introjdbc.model.Customer;
 import org.generation.italy.introjdbc.model.Order;
 import org.generation.italy.introjdbc.model.OrderLine;
 import org.generation.italy.introjdbc.model.Product;
 import org.generation.italy.introjdbc.model.exceptions.DataException;
+import org.generation.italy.introjdbc.model.repositories.abstractions.CustomerRepository;
 import org.generation.italy.introjdbc.utils.ConnectionUtils;
 
 public class JdbcCustomerRepository implements CustomerRepository{
@@ -52,38 +41,6 @@ public class JdbcCustomerRepository implements CustomerRepository{
         where custid=?
         order by orderid, orderdate desc
             """;
-    
-                    
-                
-
-    @Override
-    public Customer create(Customer customer) throws DataException {
-       try(Connection conn=ConnectionUtils.createConnection();
-          PreparedStatement ps=conn.prepareStatement(INSERT_CUSTOMER, Statement.RETURN_GENERATED_KEYS); 
-       ){
-        ps.setString(1,customer.getCompanyName());
-        ps.setString(2,customer.getContactName());
-        ps.setString(3,customer.getContactTitle());
-        ps.setString(4,customer.getAddress());
-        ps.setString(5,customer.getCity());
-        ps.setString(6,customer.getRegion());
-        ps.setString(7,customer.getPostalCode());
-        ps.setString(8,customer.getCountry());
-        ps.setString(9,customer.getPhone());
-        ps.setString(10,customer.getFax());
-        ps.executeUpdate();
-        try(ResultSet rs=ps.getGeneratedKeys()){
-            if(rs.next()){
-                int key=rs.getInt(1);
-                customer.setCustomerId(key);
-            }
-        }
-        return customer;
-       }catch(SQLException e){
-            throw new DataException("Errore nell'inserimento di un cliente ", e);
-       }
-
- }
 
     @Override
     public Iterable<Customer> getByCountry(String country) throws DataException {
@@ -187,6 +144,58 @@ public class JdbcCustomerRepository implements CustomerRepository{
                 return orders;
             }
         }
+    }
+
+    @Override
+    public Customer save(Customer customer) throws DataException {
+        try(Connection conn=ConnectionUtils.createConnection();
+        PreparedStatement ps=conn.prepareStatement(INSERT_CUSTOMER, Statement.RETURN_GENERATED_KEYS); 
+     ){
+      ps.setString(1,customer.getCompanyName());
+      ps.setString(2,customer.getContactName());
+      ps.setString(3,customer.getContactTitle());
+      ps.setString(4,customer.getAddress());
+      ps.setString(5,customer.getCity());
+      ps.setString(6,customer.getRegion());
+      ps.setString(7,customer.getPostalCode());
+      ps.setString(8,customer.getCountry());
+      ps.setString(9,customer.getPhone());
+      ps.setString(10,customer.getFax());
+      ps.executeUpdate();
+      try(ResultSet rs=ps.getGeneratedKeys()){
+          if(rs.next()){
+              int key=rs.getInt(1);
+              customer.setCustomerId(key);
+          }
+      }
+      return customer;
+     }catch(SQLException e){
+          throw new DataException("Errore nell'inserimento di un cliente ", e);
+     }
+        
+    }
+
+    @Override
+    public Optional<Customer> findById(Integer id) throws DataException {
+        
+    }
+
+    @Override
+    public List<Customer> findAll() throws DataException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
+    }
+
+    @Override
+    public void update(Customer newEntity) throws DataException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'update'");
+    }
+
+    @Override
+    public void deleteById(Integer id) throws DataException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
     }   
 
     

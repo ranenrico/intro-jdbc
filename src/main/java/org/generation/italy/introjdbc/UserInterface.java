@@ -1,6 +1,6 @@
 package org.generation.italy.introjdbc;
 
-import org.generation.italy.introjdbc.model.repositories.CategoryRepository;
+import org.generation.italy.introjdbc.model.repositories.abstractions.CategoryRepository;
 
 public class UserInterface {
     private CategoryRepository catRepo;

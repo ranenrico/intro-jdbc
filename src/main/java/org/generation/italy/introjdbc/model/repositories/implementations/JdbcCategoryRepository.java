@@ -1,4 +1,4 @@
-package org.generation.italy.introjdbc.model.repositories;
+package org.generation.italy.introjdbc.model.repositories.implementations;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,12 +7,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import javax.xml.transform.Result;
 
 import org.generation.italy.introjdbc.model.Category;
 import org.generation.italy.introjdbc.model.exceptions.DataException;
+import org.generation.italy.introjdbc.model.repositories.abstractions.CategoryRepository;
 import org.generation.italy.introjdbc.utils.ConnectionUtils;
 
 public class JdbcCategoryRepository implements CategoryRepository {
@@ -41,13 +43,15 @@ public class JdbcCategoryRepository implements CategoryRepository {
                                                         (categoryName, description)
                                                         VALUES(?,?)
                                                         """;
+    private JdbcTemplate<Category> template = new JdbcTemplate<>();
+
     @Override
-    public Iterable<Category> getAll() throws DataException {
+    public List<Category> findAll() throws DataException {
         try(
             Connection c = ConnectionUtils.createConnection();
             Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery(ALL_CATEGORIES)){
-                Collection<Category> cats = new ArrayList<>();
+                List<Category> cats = new ArrayList<>();
                 while(rs.next()){
                     // int id = rs.getInt("categoryid");
                     // String name = rs.getString("categoryname");
@@ -62,38 +66,25 @@ public class JdbcCategoryRepository implements CategoryRepository {
 
     @Override
     public Iterable<Category> getByNameLike(String part) throws DataException {
-        try(
-            Connection c = ConnectionUtils.createConnection();
-            PreparedStatement ps = c.prepareStatement(ALL_CATEGORIES_NAME_LIKE);
-        ){
-                ps.setString(1, "%"+part+"%");
-                try(ResultSet rs = ps.executeQuery()){
-                    Collection<Category> cats = new ArrayList<>();
-                    while(rs.next()){
-                        cats.add(new Category(rs.getInt("categoryid"), rs.getString("categoryname"), rs.getString("description")));
-                    }
-                    return cats;
-                }
-        } catch(SQLException e){
-                throw new DataException("Errore nella ricerca di categorie per nome LIKE", e);
-        }
+        return template.query(ALL_CATEGORIES_NAME_LIKE, ps -> ps.setString(1, "%" + part + "%"),
+        rs -> new Category(rs.getInt("categoryid"), rs.getString("categoryname"), rs.getString("description"))
+        );
     }
     @Override
-    public boolean deleteById(int id) throws DataException {
+    public void deleteById(Integer id) throws DataException {
         try(
             Connection c = ConnectionUtils.createConnection();
             PreparedStatement ps = c.prepareStatement(DELETE_BY_ID); 
         ){
             ps.setInt(1, id);
             int n = ps.executeUpdate();
-            return n == 1;
         }catch(SQLException e){
             throw new DataException("Errore nell'eliminazione di categorie per id", e);
         }
     }
 
     @Override
-    public Optional<Category> findById(int id) throws DataException {
+    public Optional<Category> findById(Integer id) throws DataException {
         try(
             Connection c = ConnectionUtils.createConnection();
             PreparedStatement ps = c.prepareStatement(CATEGORY_BY_ID);
@@ -112,10 +103,10 @@ public class JdbcCategoryRepository implements CategoryRepository {
         }
     }
     @Override
-    public Optional<Category> update(Category newCategory) throws DataException {
+    public void update(Category newCategory) throws DataException {
         Optional<Category> oldCategory= findById(newCategory.getId());
         if(oldCategory.isEmpty()){
-            return Optional.empty();
+            throw new RuntimeException();
         }
         try(
             Connection c = ConnectionUtils.createConnection();
@@ -128,7 +119,6 @@ public class JdbcCategoryRepository implements CategoryRepository {
             // if(n!=1){
             //     return Optional.empty();
             // }
-            return oldCategory;
 
         }catch(SQLException e){
             throw new DataException("Errore nella modifica di categorie ", e);
@@ -137,7 +127,7 @@ public class JdbcCategoryRepository implements CategoryRepository {
 
 
     @Override
-    public Category create(Category category) throws DataException {
+    public Category save(Category category) throws DataException {
             try(
                 Connection c = ConnectionUtils.createConnection();
                 PreparedStatement ps = c.prepareStatement(INSERT_CATEGORY,Statement.RETURN_GENERATED_KEYS)){
