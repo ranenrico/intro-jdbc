@@ -50,12 +50,19 @@ public class Customer {
         or.setCustomer(this);
         return orders.size();
     }
+<<<<<<< HEAD
 
     public void addOrders(Collection<Order> newOrders){
         newOrders.stream().forEach(o -> o.setCustomer(this));
         orders.addAll(newOrders);
     }
 
+=======
+    public void addOrders(Collection<Order> newOrders){
+        newOrders.stream().forEach(o -> o.setCustomer(this));
+        orders.addAll(newOrders);       
+    }
+>>>>>>> main
     public int getId() {
         return id;
     }

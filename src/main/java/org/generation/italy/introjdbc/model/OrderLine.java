@@ -3,7 +3,6 @@ package org.generation.italy.introjdbc.model;
 public class OrderLine {
     private Order order;
     private Product product;
-    //lasciamo perdere product id 
     private double price;
     private int quantity;
     private double discount;
@@ -36,4 +35,11 @@ public class OrderLine {
         this.discount = discount;
     }
    
+    @Override
+    public String toString(){
+        return String.format("OrderLine [order: %d,productid: %d,quantity: %d, price:%f,  discount: %f ]",
+                            order.getId(),product.getId(),quantity,price,discount);
+    }
 }
+// }return String.format("OrderLine [order: %d,productid: %d quantity: %d price:%f discount: %f",
+// order.getId(),product.getId(),quantity,price,discount);

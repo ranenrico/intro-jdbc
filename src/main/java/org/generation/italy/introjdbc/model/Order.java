@@ -49,6 +49,24 @@ public class Order implements Comparable<Order>{
             this(null,orderDate,requiredDate,shipDate,freight,shipName,shipAddress,shipCity,shipRegion,postalCode,shipCountry);
         
     }
+    
+
+    public Order(int id, LocalDate orderDate, LocalDate requiredDate, LocalDate shipDate, double freight,
+            String shipName, String shipAddress, String shipCity, String shipRegion, String postalCode,
+            String shipCountry) {
+        this.id = id;
+        this.orderDate = orderDate;
+        this.requiredDate = requiredDate;
+        this.shipDate = shipDate;
+        this.freight = freight;
+        this.shipName = shipName;
+        this.shipAddress = shipAddress;
+        this.shipCity = shipCity;
+        this.shipRegion = shipRegion;
+        this.postalCode = postalCode;
+        this.shipCountry = shipCountry;
+        this.orderLines=new HashSet();
+    }
 
     public Set<OrderLine> getOrderLines() {
         return orderLines;
@@ -64,11 +82,17 @@ public class Order implements Comparable<Order>{
     public Customer getCustomer() {
         return customer;
     }
+<<<<<<< HEAD
 
     public void setCustomer(Customer customer){
         this.customer = customer;
     }
 
+=======
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+>>>>>>> main
     public LocalDate getOrderDate() {
         return orderDate;
     }
@@ -112,7 +136,7 @@ public class Order implements Comparable<Order>{
 
     @Override
     public String toString() {
-        return "Order [id=" + id + "]"+orderLines;
+        return "Order [id=" + id + "]"+orderLines.toString();
     }
 
 }
