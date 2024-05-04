@@ -30,7 +30,7 @@ public class JdbcCustomerRepository implements CustomerRepository{
             """;
     private static final String FIND_BY_ID="""
         SELECT custid, companyname, contactname, contacttitle, address, city, region, postalcode, country, phone, fax
-        FROM public.customers WHERE id=?;
+        FROM public.customers WHERE custid=?;
             """;
     private static final String GET_ALL_BY_CUSTID="""
         SELECT orderid,o.orderdate,o.requireddate,o.shippeddate,o.freight,o.shipname,o.shipaddress,o.shipcity,o.shipregion,o.shippostalcode,o.shipcountry,
@@ -43,12 +43,21 @@ public class JdbcCustomerRepository implements CustomerRepository{
             """;
 
     private static final String GET_ALL = """
-        SELECT custid,orderid,orderdate ,unitprice,qty,discount 
+        SELECT custid,orderid,orderdate,unitprice,qty,discount 
         FROM public.customers 
             """;      
-
+    private static final String UPDATE_CUSTOMER="""
+        UPDATE customers
+        SET companyname=?, contactname=?, contacttitle=?, address=?, city=?, region=?, postalcode=?, country=?, phone=?, fax=?
+        where custid=?
+        """;
+    private static final String DELETE_BY_ID="""
+            DELETE FROM customers
+            where custid=?
+            """;
     private JdbcTemplate<Customer> template = new JdbcTemplate<>();
-    @Override
+
+    @Override//
     public Iterable<Customer> getByCountry(String country) throws DataException {
             return template.query(FIND_BY_COUNTRY, this::fromResultSet, country);
     }
@@ -60,7 +69,7 @@ public class JdbcCustomerRepository implements CustomerRepository{
            return oc; 
         }
         try {
-            Set<Order> orders = getFullOrdersForCustomer(id);
+            Set<Order> orders = getFullOrdersForCustomer2(id);
             oc.get().addOrders(orders);
             return oc;
         } catch (SQLException e) {
@@ -71,7 +80,7 @@ public class JdbcCustomerRepository implements CustomerRepository{
 
     @Override
     public Optional<Customer> findById(Integer id) throws DataException {
-        return template.queryForObject(FIND_BY_ID, this::fromResultSet);  
+        return template.queryForObject(FIND_BY_ID, this::fromResultSet,id);  
     }
 
     private Set<Order> getFullOrdersForCustomer(int custid) throws SQLException{
@@ -84,12 +93,13 @@ public class JdbcCustomerRepository implements CustomerRepository{
                    int id=rs.getInt("orderid");
                    Order o=orderMap.get(id);//cercato nella mappa
                    if(o==null){
-                        o=new Order(rs.getDate("orderdate").toLocalDate(),rs.getDate("requireddate").toLocalDate(),rs.getDate("shippeddate").toLocalDate(),rs.getDouble("freight"),
-                        rs.getString("shipname"),rs.getString("shipaddress"),rs.getString("shipcity"),rs.getString("shipregion"),rs.getString("shippostalcode"),rs.getString("country"));
+                        o=new Order(rs.getInt("orderid"),rs.getDate("orderdate").toLocalDate(),rs.getDate("requireddate").toLocalDate(),rs.getDate("shippeddate").toLocalDate(),rs.getDouble("freight"),
+                        rs.getString("shipname"),rs.getString("shipaddress"),rs.getString("shipcity"),rs.getString("shipregion"),rs.getString("shippostalcode"),rs.getString("shipcountry"));
                         orderMap.put(o.getId(),o);
                    }
                    OrderLine ol=new OrderLine(o,new Product(rs.getInt("productid")),rs.getDouble("unitprice"),rs.getInt("qty"),rs.getDouble("discount"));
                    o.addOrderLine(ol);
+                   System.out.println(ol);
                 }
                 return new TreeSet<>(orderMap.values());
             }
@@ -107,8 +117,8 @@ public class JdbcCustomerRepository implements CustomerRepository{
                 while(rs.next()){
                     int id=rs.getInt("orderid");
                     if(id!=lastId){
-                        current=new Order(rs.getDate("orderdate").toLocalDate(),rs.getDate("requireddate").toLocalDate(),rs.getDate("shippeddate").toLocalDate(),rs.getDouble("freight"),
-                        rs.getString("shipname"),rs.getString("shipaddress"),rs.getString("shipcity"),rs.getString("shipregion"),rs.getString("shippostalcode"),rs.getString("country"));
+                        current=new Order(rs.getInt("orderid"),rs.getDate("orderdate").toLocalDate(),rs.getDate("requireddate").toLocalDate(),rs.getDate("shippeddate").toLocalDate(),rs.getDouble("freight"),
+                        rs.getString("shipname"),rs.getString("shipaddress"),rs.getString("shipcity"),rs.getString("shipregion"),rs.getString("shippostalcode"),rs.getString("shipcountry"));
                         orders.add(current);
                         lastId=id;
                     }
@@ -121,25 +131,34 @@ public class JdbcCustomerRepository implements CustomerRepository{
         }
     }
 
+    // @Override
+    // public Customer save(Customer c) throws DataException {
+    //     KeyHolder kh = new KeyHolder();
+    //     template.insert(INSERT_CUSTOMER,
+    //                     kh,
+    //                    // this::setCustomerParameters,
+    //                     c.getCompanyName(),
+    //                     c.getContactName(),
+    //                     c.getContactTitle(),
+    //                     c.getAddress(),
+    //                     c.getCity(),
+    //                     c.getRegion(),
+    //                     c.getPostalCode(),
+    //                     c.getCountry(),
+    //                     c.getPhone(),
+    //                     c.getFax()
+    //                     ); 
+    //    c.setCustomerId(kh.getKey().intValue());
+    //    return c; 
+    // }
     @Override
-    public Customer save(Customer c) throws DataException {
-        KeyHolder kh = new KeyHolder();
-        template.insert(INSERT_CUSTOMER,
-                        kh,
-                        c.getCompanyName(),
-                        c.getContactName(),
-                        c.getContactTitle(),
-                        c.getAddress(),
-                        c.getCity(),
-                        c.getRegion(),
-                        c.getPostalCode(),
-                        c.getCountry(),
-                        c.getPhone(),
-                        c.getFax()
-                        ); 
-       c.setCustomerId(kh.getKey().intValue());
-       return c; 
+     public Customer save(Customer c) throws DataException {
+        KeyHolder kh=new KeyHolder();
+        template.insert(INSERT_CUSTOMER, kh,this::setCustomerParameters,c);
+        c.setCustomerId(kh.getKey().intValue());
+        return c;
     }
+
 
     @Override
     public List<Customer> findAll() throws DataException {
@@ -148,12 +167,12 @@ public class JdbcCustomerRepository implements CustomerRepository{
 
     @Override
     public void update(Customer newEntity) throws DataException { 
+        template.update(UPDATE_CUSTOMER,this::setCustomerParameters,newEntity);
     }
 
     @Override
     public void deleteById(Integer id) throws DataException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
+        template.update(DELETE_BY_ID,id);
     }   
 
     private Customer fromResultSet(ResultSet rs) throws SQLException{
@@ -171,7 +190,8 @@ public class JdbcCustomerRepository implements CustomerRepository{
 
     }
 
-    private void setCustomerParameters(PreparedStatement ps, Customer c) throws SQLException{
+    private void setCustomerParameters(PreparedStatement ps, Object o) throws SQLException{
+        Customer c=(Customer) o;
         ps.setString(1,c.getCompanyName());
         ps.setString(2,c.getContactName());
         ps.setString(3,c.getContactTitle());

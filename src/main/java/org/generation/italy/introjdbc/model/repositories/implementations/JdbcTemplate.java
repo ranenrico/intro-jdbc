@@ -13,6 +13,7 @@ import java.util.Optional;
 import org.generation.italy.introjdbc.model.Category;
 import org.generation.italy.introjdbc.model.exceptions.DataException;
 import org.generation.italy.introjdbc.model.repositories.abstractions.PreparedStatementSetter;
+import org.generation.italy.introjdbc.model.repositories.abstractions.PsSetterWithObject;
 import org.generation.italy.introjdbc.model.repositories.abstractions.RowMapper;
 import org.generation.italy.introjdbc.utils.ConnectionUtils;
 
@@ -93,6 +94,19 @@ public class JdbcTemplate<T> {
         }
     }
 
+    public int update(String sql, PsSetterWithObject psSetter,Object o) throws DataException{
+        try(
+            Connection c = ConnectionUtils.createConnection();
+            PreparedStatement ps = c.prepareStatement(sql);
+        ){
+                psSetter.setParameters(ps,o);
+                return ps.executeUpdate();   
+        } catch(SQLException e){
+                throw new DataException("Errore nella query", e);
+        }
+    }
+   
+
     public void insert(String sql, KeyHolder kh, Object... params) throws DataException{
         try(
             Connection c = ConnectionUtils.createConnection();
@@ -101,6 +115,25 @@ public class JdbcTemplate<T> {
                 for(int i = 0; i < params.length; i++){
                     ps.setObject((i+1), params[i]);
                 }
+                ps.executeUpdate(); 
+                try(ResultSet rs = ps.getGeneratedKeys()){
+                    if(rs.next()){
+                        Number n = (Number)rs.getObject(1);
+                        kh.setKey(n);
+                    }
+                } 
+
+        } catch(SQLException e){
+                throw new DataException("Errore nella query", e);
+        }
+    }
+
+    public void insert(String sql, KeyHolder kh, PsSetterWithObject psSetterO,Object t) throws DataException{
+        try(
+            Connection c = ConnectionUtils.createConnection();
+            PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        ){
+                psSetterO.setParameters(ps,t);
                 ps.executeUpdate(); 
                 try(ResultSet rs = ps.getGeneratedKeys()){
                     if(rs.next()){

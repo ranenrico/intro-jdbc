@@ -43,7 +43,7 @@ public class JdbcCategoryRepository implements CategoryRepository {
                                                         (categoryName, description)
                                                         VALUES(?,?)
                                                         """;
-    private JdbcTemplate<Category> template = new JdbcTemplate<>();
+   private JdbcTemplate<Category> template = new JdbcTemplate<>();
 
     @Override
     public List<Category> findAll() throws DataException {
@@ -53,17 +53,16 @@ public class JdbcCategoryRepository implements CategoryRepository {
     @Override
     public Iterable<Category> getByNameLike(String part) throws DataException {
         return template.query(ALL_CATEGORIES_NAME_LIKE,
-                              ps -> ps.setString(1, "%" + part + "%"),
+                              (ps)-> ps.setString(1, "%" + part + "%"),
                               rs -> new Category(rs.getInt("categoryid"),
                                                  rs.getString("categoryname"),
                                                  rs.getString("description"))
         );
-    }
+    }            
     @Override
     public void deleteById(Integer id) throws DataException {
         template.update(DELETE_BY_ID, id);
     }
-
     @Override
     public Optional<Category> findById(Integer id) throws DataException {
         return template.queryForObject(CATEGORY_BY_ID, this::fromResultSet, id);

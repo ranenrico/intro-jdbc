@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import org.generation.italy.introjdbc.model.Category;
 import org.generation.italy.introjdbc.model.Customer;
@@ -25,8 +26,30 @@ import org.postgresql.Driver;
 //tripla join
 
 public class Main {
-    private static final String ALL_CATEGORIES = "SELECT categoryid, categoryname, description FROM categories";
+    //private static final String ALL_CATEGORIES = "SELECT categoryid, categoryname, description FROM categories";
     public static void main(String[] args) throws DataException {
+        CustomerRepository cu=new JdbcCustomerRepository();
+        var result=cu.getByCountry("Italy");
+        for(var r:result){
+            System.out.println(r);
+        }
+        
+       var lo= cu.findByIdWithOrders(1);
+            System.out.println(lo.get());
+       
+       Optional<Customer> cust=cu.findById(2);
+       System.out.println(cust);
+       Customer c=new Customer("oracle", "Giancarlo", "assistente", "via giolitti", "Rome", "lazio","00189", "italy", "09847264","42924827");
+       System.out.println(cu.save(c));
+    }
+
+
+
+
+
+
+
+
         // System.out.println("Hello world!");
         // final String jdbcurl = "jdbc:postgresql://localhost:5432/company";
         // final String user = "postgresMaster";
@@ -67,20 +90,16 @@ public class Main {
     //    Category newC=new Category(created.getId(), "ciao2", "pippo2");
     //    cr.update(newC);
     
-        CustomerRepository cu=new JdbcCustomerRepository();
+        // CustomerRepository cu=new JdbcCustomerRepository();
 
-        //Customer c=cu.create(new Customer("Oracle","Riccardo","Mr","Via Cosenza","Cosenza","Calabria","001","Italia","344556677","098765"));
-        // var c=cu.getByCountry("Italy");
-        // for(var ac: c){
-        //     System.out.println(ac);
-        // }
+        // //Customer c=cu.create(new Customer("Oracle","Riccardo","Mr","Via Cosenza","Cosenza","Calabria","001","Italia","344556677","098765"));
+        // // var c=cu.getByCountry("Italy");
+        // // for(var ac: c){
+        // //     System.out.println(ac);
+        // // }
 
-        var c1=cu.findByIdWithOrders(1);
-        //System.out.println("custid: %s, %s,  c1.getId(),c1.getOrders(),c1.getOrders().getOrderLines() +)";c1.getOrders()
-            System.out.println(c1);
-
-
-
+        // var c1=cu.findByIdWithOrders(1);
+        // //System.out.println("custid: %s, %s,  c1.getId(),c1.getOrders(),c1.getOrders().getOrderLines() +)";c1.getOrders()
+        //     System.out.println(c1);
 
     }
-}
