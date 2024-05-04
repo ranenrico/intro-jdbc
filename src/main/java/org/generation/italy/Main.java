@@ -28,19 +28,19 @@ import org.postgresql.Driver;
 public class Main {
     //private static final String ALL_CATEGORIES = "SELECT categoryid, categoryname, description FROM categories";
     public static void main(String[] args) throws DataException {
-        CustomerRepository cu=new JdbcCustomerRepository();
-        var result=cu.getByCountry("Italy");
-        for(var r:result){
-            System.out.println(r);
-        }
-        
-       var lo= cu.findByIdWithOrders(1);
-            System.out.println(lo.get());
-       
-       Optional<Customer> cust=cu.findById(2);
-       System.out.println(cust);
-       Customer c=new Customer("oracle", "Giancarlo", "assistente", "via giolitti", "Rome", "lazio","00189", "italy", "09847264","42924827");
-       System.out.println(cu.save(c));
+//        CustomerRepository cu=new JdbcCustomerRepository();
+//        var result=cu.getByCountry("Italy");
+//        for(var r:result){
+//            System.out.println(r);
+//        }
+//
+//       var lo= cu.findByIdWithOrders(1);
+//            System.out.println(lo.get());
+//
+//       Optional<Customer> cust=cu.findById(2);
+//       System.out.println(cust);
+//       Customer c=new Customer("oracle", "Giancarlo", "assistente", "via giolitti", "Rome", "lazio","00189", "italy", "09847264","42924827");
+//       System.out.println(cu.save(c));
     }
 
 

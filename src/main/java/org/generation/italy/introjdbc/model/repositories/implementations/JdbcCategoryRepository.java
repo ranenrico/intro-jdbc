@@ -43,7 +43,11 @@ public class JdbcCategoryRepository implements CategoryRepository {
                                                         (categoryName, description)
                                                         VALUES(?,?)
                                                         """;
-   private JdbcTemplate<Category> template = new JdbcTemplate<>();
+   private JdbcTemplate<Category> template ;
+
+    public JdbcCategoryRepository(Connection c) {//iniezione
+        template=new JdbcTemplate<>(c);
+    }
 
     @Override
     public List<Category> findAll() throws DataException {

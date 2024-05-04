@@ -18,11 +18,18 @@ import org.generation.italy.introjdbc.model.repositories.abstractions.RowMapper;
 import org.generation.italy.introjdbc.utils.ConnectionUtils;
 
 public class JdbcTemplate<T> {
+    private Connection c;
 
+    public JdbcTemplate(Connection c) {
+        this.c = c;
+    }
+
+    public JdbcTemplate() throws SQLException{
+        this.c=ConnectionUtils.createConnection() ;
+    }
 
     public List<T> query(String sql, PreparedStatementSetter psSetter, RowMapper<T> mapper) throws DataException{
         try(
-            Connection c = ConnectionUtils.createConnection();
             PreparedStatement ps = c.prepareStatement(sql);
         ){
                 psSetter.setParameters(ps);
@@ -41,7 +48,6 @@ public class JdbcTemplate<T> {
 
     public List<T> query(String sql, RowMapper<T> mapper, Object... params) throws DataException{
         try(
-            Connection c = ConnectionUtils.createConnection();
             PreparedStatement ps = c.prepareStatement(sql);
         ){
                 for(int i = 0; i < params.length; i++){
@@ -62,7 +68,6 @@ public class JdbcTemplate<T> {
 
     public Optional<T> queryForObject(String sql, RowMapper<T> mapper, Object... params) throws DataException{
         try(
-            Connection c = ConnectionUtils.createConnection();
             PreparedStatement ps = c.prepareStatement(sql);
         ){
                 for(int i = 0; i < params.length; i++){
@@ -82,7 +87,6 @@ public class JdbcTemplate<T> {
 
     public int update(String sql, Object... params) throws DataException{
         try(
-            Connection c = ConnectionUtils.createConnection();
             PreparedStatement ps = c.prepareStatement(sql);
         ){
                 for(int i = 0; i < params.length; i++){
@@ -96,7 +100,6 @@ public class JdbcTemplate<T> {
 
     public int update(String sql, PsSetterWithObject psSetter,Object o) throws DataException{
         try(
-            Connection c = ConnectionUtils.createConnection();
             PreparedStatement ps = c.prepareStatement(sql);
         ){
                 psSetter.setParameters(ps,o);
@@ -109,7 +112,6 @@ public class JdbcTemplate<T> {
 
     public void insert(String sql, KeyHolder kh, Object... params) throws DataException{
         try(
-            Connection c = ConnectionUtils.createConnection();
             PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         ){
                 for(int i = 0; i < params.length; i++){
@@ -130,7 +132,6 @@ public class JdbcTemplate<T> {
 
     public void insert(String sql, KeyHolder kh, PsSetterWithObject psSetterO,Object t) throws DataException{
         try(
-            Connection c = ConnectionUtils.createConnection();
             PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         ){
                 psSetterO.setParameters(ps,t);

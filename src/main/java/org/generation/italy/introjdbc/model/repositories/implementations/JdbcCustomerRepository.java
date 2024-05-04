@@ -55,7 +55,11 @@ public class JdbcCustomerRepository implements CustomerRepository{
             DELETE FROM customers
             where custid=?
             """;
-    private JdbcTemplate<Customer> template = new JdbcTemplate<>();
+    private JdbcTemplate<Customer> template;
+
+    public JdbcCustomerRepository(Connection c) {
+        template=new JdbcTemplate<>(c);
+    }
 
     @Override//
     public Iterable<Customer> getByCountry(String country) throws DataException {
