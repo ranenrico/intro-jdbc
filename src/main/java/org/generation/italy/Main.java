@@ -1,34 +1,39 @@
 package org.generation.italy;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-
-import org.postgresql.Driver;
-
-//perché il mio codice non usa direttamente le classi della libreria di postgres?
-//qual è la tecnica che mi permette di usare delle interfacce per parlare con degli oggetti della libreria di postgres
-
-
-//com'è possibile che il metodo DriverManager getConnection() mi ritorni un oggetto che io non ho nominato?
-
-//perché il DriverManager seleziona il giusto driver in base all'URL (driver ha metodo acceptsURL)
-
-//il metodo DriverManager getConnection() è un esempio di un idioma che si chiama..? (un pattern meno dignitoso)
-
-//factory method
+import org.generation.italy.introjdbc.model.Category;
+import org.generation.italy.introjdbc.model.Customer;
+import org.generation.italy.introjdbc.model.exeptions.DataException;
+import org.generation.italy.introjdbc.model.repositories.abstractions.CategoryRepository;
+import org.generation.italy.introjdbc.model.repositories.abstractions.CustomerRepository;
+import org.generation.italy.introjdbc.model.repositories.implementations.JdbcCategoryRepository;
+import org.generation.italy.introjdbc.model.repositories.implementations.JdbcCustomerRepository;
+ 
 
 public class Main {
-    public static void main(String[] args) {
-        System.out.println("Hello world!");
-        final String jdbcurl = "jdbc:postgresql://localhost:5432/company";
-        final String user = "postgresMaster";
-        final String password = "goPostgresGo";
-        try (Connection conn = DriverManager.getConnection(jdbcurl, user, password)) {
-            System.out.println("Connessione riuscita");
-            System.out.println(conn.getClass().getName());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public static void main(String[] args) throws DataException {
+        CustomerRepository customerRepo = new JdbcCustomerRepository();
+        Customer c = new Customer("Fedex", "Gigi", "Mr", "via Torino", "Capalle", "Toscana", "50123", "Italia", "12343211", "0544321");
+        Customer savedcustomer = customerRepo.save(c);
+        System.out.println(savedcustomer.toString());
+
+
+
+        // CategoryRepository cr = new JdbcCategoryRepository();
+        // var cats = cr.getByNameLike("ea");
+        // for (var ca : cats) {
+        //     System.out.println(ca.getName());
+        // }
+        // var oc = cr.findById(1);
+        // if (oc.isPresent()){
+        //     System.out.println(oc.get().getName());
+        // } else {
+        //     System.out.println("Non esiste una categoria con questo id");
+        // }  
+
+        // Category created = cr.save(new Category(0,"ciao", "pippo"));
+        // Category checkCat = cr.findById(created.getId()).get();
+        // System.out.println(checkCat.getName() + " " + checkCat.getDescription());
+        // Category newC = new Category(created.getId(), "ciao2", "pippo2");
+        // cr.update(newC);
     }
 }
