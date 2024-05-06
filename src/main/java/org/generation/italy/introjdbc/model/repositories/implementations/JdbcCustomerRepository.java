@@ -33,17 +33,10 @@ public class JdbcCustomerRepository implements CustomerRepository{
                                             where custid=?
                                                 """;
     private static final String FIND_BY_ID="""
-<<<<<<< HEAD
-                                            SELECT custid, companyname, contactname, 
-                                                    contacttitle, address, city, region, 
-                                                    postalcode, country, phone, fax
-                                            FROM public.customers WHERE id=?;
-                                                """;
-=======
+
         SELECT custid, companyname, contactname, contacttitle, address, city, region, postalcode, country, phone, fax
         FROM public.customers WHERE custid=?;
             """;
->>>>>>> main
     private static final String GET_ALL_BY_CUSTID="""
                                                 SELECT orderid, o.orderdate, o.requireddate, o.shippeddate, 
                                                         o.freight, o.shipname, o.shipaddress, o.shipcity, 
@@ -56,23 +49,13 @@ public class JdbcCustomerRepository implements CustomerRepository{
                                                         order by orderid, orderdate desc
                                                     """;
 
-    private static final String GET_ALL="""
+    private static final String GET_ALL = """
                                         SELECT custid, orderid, orderdate, unitprice, qty, discount 
                                         FROM public.customers
                                         """;                                                
 
-    private JdbcTemplate<Customer> template = new JdbcTemplate<>();
+    private JdbcTemplate<Customer> template;
 
-<<<<<<< HEAD
-    @Override
-    public Iterable<Customer> getByCountry(String country) throws DataException {
-        return template.query(FIND_BY_COUNTRY, this::fromResultSet, country);
-        // i :: stanno ad indicare di trivare l'oggetto qui
-=======
-    private static final String GET_ALL = """
-        SELECT custid,orderid,orderdate,unitprice,qty,discount 
-        FROM public.customers 
-            """;      
     private static final String UPDATE_CUSTOMER="""
         UPDATE customers
         SET companyname=?, contactname=?, contacttitle=?, address=?, city=?, region=?, postalcode=?, country=?, phone=?, fax=?
@@ -82,7 +65,6 @@ public class JdbcCustomerRepository implements CustomerRepository{
             DELETE FROM customers
             where custid=?
             """;
-    private JdbcTemplate<Customer> template;
 
     public JdbcCustomerRepository(Connection c) {
         template=new JdbcTemplate<>(c);
@@ -91,7 +73,6 @@ public class JdbcCustomerRepository implements CustomerRepository{
     @Override//
     public Iterable<Customer> getByCountry(String country) throws DataException {
             return template.query(FIND_BY_COUNTRY, this::fromResultSet, country);
->>>>>>> main
     }
 
     // @Override
@@ -129,15 +110,9 @@ public class JdbcCustomerRepository implements CustomerRepository{
 
     @Override
     public Optional<Customer> findById(Integer id) throws DataException {
-<<<<<<< HEAD
-        return template.queryForObject(FIND_BY_ID, this::fromResultSet);
-    }
-    
-=======
         return template.queryForObject(FIND_BY_ID, this::fromResultSet,id);  
     }
 
->>>>>>> main
     private Set<Order> getFullOrdersForCustomer(int custid) throws SQLException{
         try(Connection c=ConnectionUtils.createConnection();
         PreparedStatement ps=c.prepareStatement(GET_ALL_BY_CUSTID)){
@@ -207,26 +182,6 @@ public class JdbcCustomerRepository implements CustomerRepository{
     //    return c; 
     // }
     @Override
-<<<<<<< HEAD
-    public Customer save(Customer c) throws DataException {
-        KeyHolder kh = new KeyHolder();
-        template.insert(INSERT_CUSTOMER, 
-                        kh, 
-                        c.getCompanyName(), 
-                        c.getContactName(), 
-                        c.getContactTitle(), 
-                        c.getAddress(),
-                        c.getCity(), 
-                        c.getRegion(), 
-                        c.getRegion(), 
-                        c.getPostalCode(), 
-                        c.getCountry(), 
-                        c.getPhone(), 
-                        c.getFax());
-        c.setCustomerId(kh.getKey().intValue());
-        return c; 
-    }
-=======
      public Customer save(Customer c) throws DataException {
         KeyHolder kh=new KeyHolder();
         template.insert(INSERT_CUSTOMER, kh,this::setCustomerParameters,c);
@@ -234,55 +189,18 @@ public class JdbcCustomerRepository implements CustomerRepository{
         return c;
     }
 
->>>>>>> main
-
     @Override
     public List<Customer> findAll() throws DataException {
         return template.query(GET_ALL, this::fromResultSet);
     }
 
     @Override
-<<<<<<< HEAD
-    public void update(Customer newEntity) throws DataException {
-        
-=======
     public void update(Customer newEntity) throws DataException { 
         template.update(UPDATE_CUSTOMER,this::setCustomerParameters,newEntity);
->>>>>>> main
     }
 
     @Override
     public void deleteById(Integer id) throws DataException {
-<<<<<<< HEAD
-        
-    }
-
-    private Customer fromResultSet(ResultSet rs) throws SQLException{
-        return new Customer(rs.getInt("custid"),
-                            rs.getString("companyname"),
-                            rs.getString("contactname"), 
-                            rs.getString("contacttitle"),
-                            rs.getString("address"), 
-                            rs.getString("city"), 
-                            rs.getString("region"),
-                            rs.getString("postalcode") , 
-                            rs.getString("country"),
-                            rs.getString("phone"), 
-                            rs.getString("fax"));
-    }
-
-    private void setCustomerParameters(PreparedStatement ps, Customer c) throws SQLException{
-        ps.setString(1, c.getCompanyName());
-        ps.setString(2, c.getContactName());
-        ps.setString(3, c.getContactTitle());
-        ps.setString(4, c.getAddress());
-        ps.setString(5, c.getCity());
-        ps.setString(6, c.getRegion());
-        ps.setString(7, c.getPostalCode());
-        ps.setString(8, c.getCountry());
-        ps.setString(9, c.getPhone());
-        ps.setString(10, c.getFax());
-=======
         template.update(DELETE_BY_ID,id);
     }   
 
@@ -313,7 +231,6 @@ public class JdbcCustomerRepository implements CustomerRepository{
         ps.setString(8,c.getCountry());
         ps.setString(9,c.getPhone());
         ps.setString(10,c.getFax());
->>>>>>> main
     }
 
     // @Override

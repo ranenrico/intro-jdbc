@@ -1,8 +1,5 @@
 package org.generation.italy;
 
-<<<<<<< HEAD
-=======
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -13,7 +10,6 @@ import java.util.Optional;
 
 import org.generation.italy.introjdbc.model.Category;
 import org.generation.italy.introjdbc.model.Customer;
->>>>>>> main
 import org.generation.italy.introjdbc.model.exceptions.DataException;
 import org.generation.italy.introjdbc.model.repositories.abstractions.CustomerRepository;
 import org.generation.italy.introjdbc.model.repositories.implementations.JdbcCustomerRepository;

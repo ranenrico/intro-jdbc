@@ -34,15 +34,12 @@ public class OrderLine {
     public void setDiscount(double discount) {
         this.discount = discount;
     }
-<<<<<<< HEAD
-=======
    
     @Override
     public String toString(){
         return String.format("OrderLine [order: %d,productid: %d,quantity: %d, price:%f,  discount: %f ]",
                             order.getId(),product.getId(),quantity,price,discount);
     }
->>>>>>> main
 }
 // }return String.format("OrderLine [order: %d,productid: %d quantity: %d price:%f discount: %f",
 // order.getId(),product.getId(),quantity,price,discount);
