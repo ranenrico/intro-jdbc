@@ -26,20 +26,21 @@ class JdbcCategoryRepositoryTest {
     private JdbcCategoryRepository repo;
     private Category c1;
     private Category c2;
-    private Category toDelete;
+    private final int NOT_EXISTS=-1;
+    private Category category;
 
     @BeforeEach
     void setUp() {
         c1=new Category(0,TEST_NAME1,DESCRIPTION1);
         c2=new Category(0,TEST_NAME2,DESCRIPTION2);
-        toDelete=new Category(0,TEST_NAME3, DESCRIPTION3);
+        category =new Category(0,TEST_NAME3, DESCRIPTION3);
         try {
             conn =ConnectionUtils.createConnection();
             conn.setAutoCommit(false);
             repo =new JdbcCategoryRepository(conn);
             repo.save(c1);
             repo.save(c2);
-            repo.save(toDelete);
+            repo.save(category);
         } catch (DataException | SQLException e) {
             fail(e.getMessage());
         }
@@ -85,25 +86,34 @@ class JdbcCategoryRepositoryTest {
     @Test
     void deleteById(){
         try {
-            assertTrue(repo.findById(toDelete.getId()).isPresent());
-           repo.deleteById(toDelete.getId());
-            assertTrue(repo.findById(toDelete.getId()).isEmpty());
+            assertTrue(repo.findById(category.getId()).isPresent());
+           repo.deleteById(category.getId());
+            assertTrue(repo.findById(category.getId()).isEmpty());
         } catch (DataException e) {
             fail(e.getMessage());
         }
     }
     @Test
-    void findById(){
+    void findById_returns_optional_present_when_category_present(){
         try{
-            assertTrue(repo.findById(toDelete.getId()).isPresent());
+            assertTrue(repo.findById(category.getId()).isPresent());
         } catch (DataException e) {
             fail(e.getMessage());
         }
     }
+    @Test
+    void findById_returns_optional_empty_when_category_not_present(){
+        try{
+            assertTrue(repo.findById(NOT_EXISTS).isEmpty());
+        } catch (DataException e) {
+            fail(e.getMessage());
+        }
+    }
+
     @Test
     void update(){
         try {
-            Optional<Category> oc= repo.findById(toDelete.getId());
+            Optional<Category> oc= repo.findById(category.getId());
             assertTrue(oc.isPresent());
             Category c=oc.get();
             assertEquals(TEST_NAME3,c.getName());
@@ -120,4 +130,5 @@ class JdbcCategoryRepositoryTest {
             fail(e.getMessage());
         }
     }
+
 }
