@@ -171,7 +171,7 @@ public class JdbcCustomerRepository implements CustomerRepository{
 
     @Override
     public void update(Customer newEntity) throws DataException { 
-        template.update(UPDATE_CUSTOMER,this::setCustomerParameters,newEntity);
+        template.update(UPDATE_CUSTOMER,this::setCustomerParametersForUpdate,newEntity);
     }
 
     @Override
@@ -194,8 +194,7 @@ public class JdbcCustomerRepository implements CustomerRepository{
 
     }
 
-    private void setCustomerParameters(PreparedStatement ps, Object o) throws SQLException{
-        Customer c=(Customer) o;
+    private void setCustomerParameters(PreparedStatement ps, Customer c) throws SQLException{
         ps.setString(1,c.getCompanyName());
         ps.setString(2,c.getContactName());
         ps.setString(3,c.getContactTitle());
@@ -206,6 +205,10 @@ public class JdbcCustomerRepository implements CustomerRepository{
         ps.setString(8,c.getCountry());
         ps.setString(9,c.getPhone());
         ps.setString(10,c.getFax());
+    }
+    private void setCustomerParametersForUpdate(PreparedStatement ps, Customer c) throws SQLException{
+        setCustomerParameters(ps,c);
+        ps.setInt(11,c.getId());
     }
 
     // @Override

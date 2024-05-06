@@ -4,6 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 @FunctionalInterface
-public interface PsSetterWithObject {
-    void setParameters(PreparedStatement ps,Object o)throws SQLException;
+public interface PsSetterWithObject<T> {
+    void setParameters(PreparedStatement ps,T o)throws SQLException;
 }

@@ -98,11 +98,11 @@ public class JdbcTemplate<T> {
         }
     }
 
-    public int update(String sql, PsSetterWithObject psSetter,Object o) throws DataException{
+    public int update(String sql, PsSetterWithObject<T> psSetter,T t) throws DataException{
         try(
             PreparedStatement ps = c.prepareStatement(sql);
         ){
-                psSetter.setParameters(ps,o);
+                psSetter.setParameters(ps,t);
                 return ps.executeUpdate();   
         } catch(SQLException e){
                 throw new DataException("Errore nella query", e);
@@ -130,7 +130,7 @@ public class JdbcTemplate<T> {
         }
     }
 
-    public void insert(String sql, KeyHolder kh, PsSetterWithObject psSetterO,Object t) throws DataException{
+    public void insert(String sql, KeyHolder kh, PsSetterWithObject<T> psSetterO,T t) throws DataException{
         try(
             PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         ){
