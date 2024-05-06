@@ -5,7 +5,11 @@ import java.util.Optional;
 
 import org.generation.italy.introjdbc.model.exceptions.DataException;
 
+<<<<<<< HEAD
 public interface CrudRepository <T, ID> {
+=======
+public interface CrudRepository<T,ID> {
+>>>>>>> main
 
     T save(T entity) throws DataException;
     Optional<T> findById(ID id) throws DataException;

@@ -2,6 +2,10 @@ package org.generation.italy.introjdbc.model.repositories.implementations;
 
 import java.io.FileReader;
 import java.io.IOException;
+<<<<<<< HEAD
+=======
+import java.sql.SQLException;
+>>>>>>> main
 import java.util.List;
 import java.util.Optional;
 
@@ -11,14 +15,7 @@ import org.generation.italy.introjdbc.model.repositories.abstractions.CategoryRe
 
 public class CsvCategoryRepository implements CategoryRepository{
 
-    @Override
-    public Iterable<Category> getAll() throws DataException {
-        try(FileReader fr = new FileReader("categories.csv")){
-            return null;
-        } catch(IOException e){
-            throw new DataException("Errore nella lettura delle categorie da file csv", e);
-        }
-    }
+    
 
     @Override
     public Category save(Category entity) throws DataException {
@@ -27,6 +24,15 @@ public class CsvCategoryRepository implements CategoryRepository{
     }
 
     @Override
+<<<<<<< HEAD
+=======
+    public Category save(Category entity) throws DataException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'save'");
+    }
+
+    @Override
+>>>>>>> main
     public Optional<Category> findById(Integer id) throws DataException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'findById'");
@@ -34,16 +40,30 @@ public class CsvCategoryRepository implements CategoryRepository{
 
     @Override
     public List<Category> findAll() throws DataException {
+<<<<<<< HEAD
+=======
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'findAll'");
     }
 
     @Override
+    public void deleteById(Integer id) throws DataException {
+>>>>>>> main
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
+    }
+
+    @Override
+<<<<<<< HEAD
     public void update(Category entity) throws DataException {
+=======
+    public void update(Category newEntity) throws DataException {
+>>>>>>> main
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'update'");
     }
 
+<<<<<<< HEAD
     @Override
     public void deleteById(Integer id) throws DataException {
         // TODO Auto-generated method stub
@@ -56,4 +76,6 @@ public class CsvCategoryRepository implements CategoryRepository{
         throw new UnsupportedOperationException("Unimplemented method 'getByNameLike'");
     }
 
+=======
+>>>>>>> main
 }
