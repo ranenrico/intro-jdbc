@@ -15,45 +15,44 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 class JdbcCategoryRepositoryTest {
     private static final String TEST_NAME1="TEST_NAME1";
     private static final String TEST_NAME2="TEST_NAME2";
-    private static final String TEST_NAME_LIKE="TEST";
+    private static final String TEST_NAME3="TEST_NAME3";
+    private static final String TEST_NAME4="TEST_NAME4";
+    private static final String TEST_NAME_LIKE="AME1";
     private static final String DESCRIPTION1="DESCRIPTION1";
     private static final String DESCRIPTION2="DESCRIPTION2";
-    private static Connection c;
-    private static JdbcCategoryRepository repo;
-    static Category c1;
-    static Category c2;
-    @BeforeAll
-    static void setUpAll(){
-        //System.out.println("setUpAll");
-        c1=new Category(0,TEST_NAME1, DESCRIPTION1);
-        c2=new Category(0,TEST_NAME2, DESCRIPTION2);
-        try {
-            c= ConnectionUtils.createConnection();
-            c.setAutoCommit(false);
-            repo=new JdbcCategoryRepository(c);
-            repo.save(c1);
-            repo.save(c2);
+    private static final String DESCRIPTION3="DESCRIPTION3";
+    private static final String DESCRIPTION4="DESCRIPTION4";
+    private Connection conn;
+    private JdbcCategoryRepository repo;
+    private Category c1;
+    private Category c2;
+    private Category toDelete;
 
-        } catch (SQLException | DataException e) {
-            fail(e.getMessage());
-        }
-    }
-    @AfterAll
-    static void afterAll(){
-        try {
-            c.rollback();
-        } catch (SQLException e) {
-            fail(e.getMessage());
-        }
-    }
     @BeforeEach
     void setUp() {
-        System.out.println("setUp");
+        c1=new Category(0,TEST_NAME1,DESCRIPTION1);
+        c2=new Category(0,TEST_NAME2,DESCRIPTION2);
+        toDelete=new Category(0,TEST_NAME3, DESCRIPTION3);
+        try {
+            conn =ConnectionUtils.createConnection();
+            conn.setAutoCommit(false);
+            repo =new JdbcCategoryRepository(conn);
+            repo.save(c1);
+            repo.save(c2);
+            repo.save(toDelete);
+        } catch (DataException | SQLException e) {
+            fail(e.getMessage());
+        }
+
     }
 
     @AfterEach
     void tearDown() {
-        System.out.println("tearDown");
+        try {
+            conn.rollback();
+        } catch (SQLException e) {
+            fail(e.getMessage());
+        }
     }
 
 
@@ -74,15 +73,21 @@ class JdbcCategoryRepositoryTest {
     }
     @Test
     void getByNameLike() {
-
-        assertTrue(c1.getName().contains(TEST_NAME_LIKE));
-        assertTrue(c2.getName().contains(TEST_NAME_LIKE));
+        try {
+            List<Category> cats= repo.getByNameLike(TEST_NAME_LIKE);
+            assertEquals(1,cats.size());
+            assertEquals(TEST_NAME1,cats.get(0).getName());
+            assertEquals(DESCRIPTION1,cats.get(0).getDescription());
+        } catch (DataException e) {
+            fail(e.getMessage());
+        }
     }
     @Test
     void deleteById(){
         try {
-           repo.deleteById(c1.getId());
-            assertNotNull(c1);
+            assertTrue(repo.findById(toDelete.getId()).isPresent());
+           repo.deleteById(toDelete.getId());
+            assertTrue(repo.findById(toDelete.getId()).isEmpty());
         } catch (DataException e) {
             fail(e.getMessage());
         }
@@ -90,7 +95,7 @@ class JdbcCategoryRepositoryTest {
     @Test
     void findById(){
         try{
-            assertNotNull(repo.findById(c1.getId()));
+            assertTrue(repo.findById(toDelete.getId()).isPresent());
         } catch (DataException e) {
             fail(e.getMessage());
         }
@@ -98,24 +103,21 @@ class JdbcCategoryRepositoryTest {
     @Test
     void update(){
         try {
-//            c1.setName(TEST_NAME2);
-//            c1.setDescription(DESCRIPTION2);
-//            repo.update(c1);
-//            assertNotEquals(TEST_NAME1,c1.getName());
-//            assertNotEquals(DESCRIPTION1,c1.getDescription());
+            Optional<Category> oc= repo.findById(toDelete.getId());
+            assertTrue(oc.isPresent());
+            Category c=oc.get();
+            assertEquals(TEST_NAME3,c.getName());
+            assertEquals(DESCRIPTION3,c.getDescription());
+            Category updated=new Category(c.getId(),TEST_NAME4,DESCRIPTION4);
+            repo.update(updated);
+            oc= repo.findById(c.getId());
+            assertTrue(oc.isPresent());
+            c=oc.get();
+            assertEquals(TEST_NAME4,c.getName());
+            assertEquals(DESCRIPTION4,c.getDescription());
 
-            Optional<Category> c3= repo.findById(c1.getId());/////
-            c3.get().setName(TEST_NAME2);
-            c3.get().setDescription(DESCRIPTION2);
-            repo.update(c3.get());
-            assertNotEquals(TEST_NAME1,c3.get().getName());
-            assertNotEquals(DESCRIPTION1,c3.get().getDescription());
         } catch (DataException e) {
             fail(e.getMessage());
         }
-
-
     }
-
-
 }

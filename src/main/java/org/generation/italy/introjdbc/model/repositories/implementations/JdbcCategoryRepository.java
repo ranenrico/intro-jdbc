@@ -55,7 +55,7 @@ public class JdbcCategoryRepository implements CategoryRepository {
     }
 
     @Override
-    public Iterable<Category> getByNameLike(String part) throws DataException {
+    public List<Category> getByNameLike(String part) throws DataException {
         return template.query(ALL_CATEGORIES_NAME_LIKE,
                               (ps)-> ps.setString(1, "%" + part + "%"),
                               rs -> new Category(rs.getInt("categoryid"),

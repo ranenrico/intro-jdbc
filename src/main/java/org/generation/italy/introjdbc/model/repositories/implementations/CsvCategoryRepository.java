@@ -16,7 +16,7 @@ public class CsvCategoryRepository implements CategoryRepository{
     
 
     @Override
-    public Iterable<Category> getByNameLike(String part) {
+    public List<Category> getByNameLike(String part) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getByNameLike'");
     }
