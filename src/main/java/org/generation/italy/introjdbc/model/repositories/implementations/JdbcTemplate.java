@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+<<<<<<< HEAD
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -14,10 +15,18 @@ import org.generation.italy.introjdbc.model.Category;
 import org.generation.italy.introjdbc.model.exceptions.DataException;
 import org.generation.italy.introjdbc.model.repositories.abstractions.PreparedStatementSetter;
 import org.generation.italy.introjdbc.model.repositories.abstractions.PsSetterWithObject;
+=======
+import java.util.List;
+import java.util.Optional;
+
+import org.generation.italy.introjdbc.model.exeptions.DataException;
+import org.generation.italy.introjdbc.model.repositories.abstractions.PreparedStatementSetter;
+>>>>>>> origin/francesca_piccitto
 import org.generation.italy.introjdbc.model.repositories.abstractions.RowMapper;
 import org.generation.italy.introjdbc.utils.ConnectionUtils;
 
 public class JdbcTemplate<T> {
+<<<<<<< HEAD
     private Connection c;
 
     public JdbcTemplate(Connection c) {
@@ -145,6 +154,87 @@ public class JdbcTemplate<T> {
 
         } catch(SQLException e){
                 throw new DataException("Errore nella query", e);
+=======
+
+    public List<T> query(String sql, PreparedStatementSetter setter, RowMapper<T> mapper) throws DataException{
+        try(Connection c = ConnectionUtils.createConnection();
+        PreparedStatement ps = c.prepareStatement(sql);){
+            setter.setParemeters(ps);
+            try(ResultSet rs = ps.executeQuery()){
+                List<T> elements = new ArrayList<>();
+                while(rs.next()){
+                    elements.add(mapper.mapRow(rs));
+                }
+                return elements;
+            }       
+        }catch (SQLException e) {
+            throw new DataException("Errore nella query", e);
+        }
+    }
+
+    public List<T> query(String sql, RowMapper<T> mapper, Object...parameters) throws DataException{
+        try(Connection c = ConnectionUtils.createConnection();
+        PreparedStatement ps = c.prepareStatement(sql);){
+            for(int i = 0; i < parameters.length; i++) {
+                ps.setObject(i+1, parameters[i]);
+            }
+            try(ResultSet rs = ps.executeQuery()){
+                List<T> elements = new ArrayList<>();
+                while(rs.next()){
+                    elements.add(mapper.mapRow(rs));
+                }
+                return elements;
+            }       
+        }catch (SQLException e) {
+            throw new DataException("Errore nella query", e);
+        }
+    }
+
+    public Optional<T> queryForObject(String sql, RowMapper<T> mapper, Object...parameters) throws DataException{
+        try(Connection c = ConnectionUtils.createConnection();
+        PreparedStatement ps = c.prepareStatement(sql);){
+            for(int i = 0; i < parameters.length; i++) {
+                ps.setObject(i+1, parameters[i]);
+            }
+            try(ResultSet rs = ps.executeQuery()){
+                if(rs.next()){
+                    return Optional.of(mapper.mapRow(rs));
+                }
+                return Optional.empty();
+            }       
+        }catch (SQLException e) {
+            throw new DataException("Errore nella query", e);
+        }
+    }
+
+    public int update(String sql, Object...parameters) throws DataException{
+        try(Connection c = ConnectionUtils.createConnection();
+        PreparedStatement ps = c.prepareStatement(sql);){
+            for(int i = 0; i < parameters.length; i++) {
+                ps.setObject(i+1, parameters[i]);
+            }
+            return ps.executeUpdate();
+        }catch (SQLException e) {
+            throw new DataException("Errore nella query", e);
+        }
+    }
+
+    public void insert(String sql, KeyHolder key, Object...parameters) throws DataException{
+        try(Connection c = ConnectionUtils.createConnection();
+        PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);){
+            for(int i = 0; i < parameters.length; i++) {
+                ps.setObject(i+1, parameters[i]);
+            }
+            ps.executeUpdate();
+            try(ResultSet rs = ps.getGeneratedKeys()){
+                if(rs.next()){
+                    Number n = (Number)rs.getObject(1);
+                    key.setKey(n);
+                }
+            } 
+        }catch (SQLException e) {
+            throw new DataException("Errore nella query", e);
+>>>>>>> origin/francesca_piccitto
         }
     }
 }

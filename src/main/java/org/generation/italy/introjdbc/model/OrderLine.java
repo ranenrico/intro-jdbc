@@ -6,11 +6,21 @@ public class OrderLine {
     private double price;
     private int quantity;
     private double discount;
+<<<<<<< HEAD
     public OrderLine() {
     }
     public OrderLine( Order order, Product product,double price,int quantity,  double discount) {
         this.order=order;
         this.product=product;
+=======
+    
+    public OrderLine() {
+    }
+
+    public OrderLine(Order order, Product product, double price, int quantity, double discount) {
+        this.order = order;
+        this.product = product;
+>>>>>>> origin/francesca_piccitto
         this.price = price;
         this.quantity = quantity;
         this.discount = discount;
@@ -19,6 +29,7 @@ public class OrderLine {
     public int getQuantity() {
         return quantity;
     }
+<<<<<<< HEAD
     public double getPrice() {
         return price;
     }
@@ -43,3 +54,15 @@ public class OrderLine {
 }
 // }return String.format("OrderLine [order: %d,productid: %d quantity: %d price:%f discount: %f",
 // order.getId(),product.getId(),quantity,price,discount);
+=======
+
+    public double getPrice() {
+        return price;
+    }
+
+    public double getDiscount() {
+        return discount;
+    }
+    
+}
+>>>>>>> origin/francesca_piccitto
